@@ -1,0 +1,31 @@
+package com.shaot.dto.worker;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(of="id")
+public class WorkerForCompanyDto {
+	private long id;
+	private String name;
+	private int shiftsCounter;
+	private int priorityByShiftsNumber;
+	
+	public WorkerForCompanyDto(long id, String name) {
+		this.name = name;
+		this.id = id;
+	}
+	
+	public void addShiftCounter() {
+		shiftsCounter++;
+	}
+	
+	public void addPriorityByShiftsNumber(int shiftsNumber) {
+		priorityByShiftsNumber += shiftsNumber;
+	}
+	
+}
