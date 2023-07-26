@@ -1,4 +1,4 @@
-package com.shaot;
+package com.shaot.spring.boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
