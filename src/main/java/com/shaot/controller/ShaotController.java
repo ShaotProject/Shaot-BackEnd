@@ -1,4 +1,4 @@
-package com.shaot.spring.boot.controller;
+package com.shaot.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
