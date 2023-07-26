@@ -22,14 +22,11 @@ import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
-import com.shaot.dto.company.CompanyWorkingDayDto;
-import com.shaot.dto.schedule.GeneratorShiftDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerScheduleDto;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.model.Worker;
-import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
 import com.shaot.service.ShaotService;
 
