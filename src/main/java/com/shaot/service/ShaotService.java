@@ -12,6 +12,7 @@ import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
+import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.schedule.GeneratorShiftDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
@@ -59,4 +60,8 @@ public interface ShaotService {
 	List<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto);
 	
 	Map<String, List<GeneratorShift>> generateEmptyWeek(long companyId, CompanyWeekGeneratorDto companyWeekGeneratorDto);
+	
+	Map<String, List<GeneratorShift>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
+	
+	
 }

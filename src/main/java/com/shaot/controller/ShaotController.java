@@ -22,11 +22,13 @@ import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
+import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerScheduleDto;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.model.Worker;
+import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
 import com.shaot.service.ShaotService;
 
@@ -129,5 +131,10 @@ public class ShaotController {
 	@DeleteMapping("shaot/company/{id}/days")
 	public List<CompanyShiftDto> removeWorkingDay(@PathVariable long id, @RequestBody CompanyRemoveWorkingDayDto companyRemoveWorkingDayDto) {
 		return service.removeWorkingDay(id, companyRemoveWorkingDayDto);
+	}
+	
+	@PutMapping("shaot/company/{id}/schedule/configure")
+	public Map<String, List<GeneratorShift>> configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
+		return service.configurateSchedule(id, configuration);
 	}
 }

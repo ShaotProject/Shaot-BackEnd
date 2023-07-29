@@ -16,6 +16,7 @@ import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
+import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.schedule.GeneratorShiftDto;
 import com.shaot.dto.worker.WorkerDayDto;
 import com.shaot.dto.worker.WorkerDto;
@@ -200,4 +201,21 @@ public class ShaotServiceImpl implements ShaotService {
 		companiesRepository.save(company);
 		return workingWeek;
 	}
+
+	@Override
+	public Map<String, List<GeneratorShift>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
+		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new EntityNotFoundException());
+		Map<String, List<GeneratorShift>> workingWeek = company.getGenerator().configureWeek(configuration);
+		companiesRepository.save(company);
+		return workingWeek;
+	}
+
+
+
+
+
+
+
+
+
 }

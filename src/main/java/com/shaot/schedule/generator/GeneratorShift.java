@@ -2,13 +2,16 @@ package com.shaot.schedule.generator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import com.shaot.dto.schedule.GeneratorShiftDto;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @EqualsAndHashCode(of="shiftName")
@@ -16,19 +19,24 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 	private String shiftName;
 	private String dayName;
 	private List<String> workersOnShift;
-	private List<GeneratorWorker> available;
+	@Setter
+	private int workerNeeded;
+	private Set<GeneratorWorker> available;
 	
 	public GeneratorShift(String shiftName, String dayName) {
 		this.shiftName = shiftName;
 		this.dayName = dayName;
-		this.available = new ArrayList<>();
+		this.available = new HashSet<>();
 		this.workersOnShift = new ArrayList<>();
 	}
 	
 	public GeneratorWorker getCandidate() {
-		if(available.size() > 0) {
-			Collections.sort(available);
-			return available.get(0);
+		if(available.size() > 0 && workerNeeded > 0) {
+			List<GeneratorWorker> workersAvailableList = new ArrayList<>(available);
+			Collections.sort(workersAvailableList);
+			GeneratorWorker worker = workersAvailableList.get(0);
+			available.remove(worker);
+			return worker;
 		}
 		return null;
 	}
