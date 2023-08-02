@@ -15,9 +15,9 @@ import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.CompanyWorkingDayDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
-import com.shaot.dto.schedule.GeneratorShiftDto;
-import com.shaot.dto.worker.WorkerDayDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
+import com.shaot.dto.worker.WorkerShiftView;
+import com.shaot.model.Worker;
 
 import lombok.Getter;
 
@@ -26,11 +26,13 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	private Map<Long, GeneratorWorker> workerPrefers; // check if needed ???
 	private Map<String, List<ShiftView>> schedule;
 	private Map<String, List<GeneratorShift>> workingWeek;
+	Map<String, List<GeneratorShift>> workingWeekCopy;
 
 	public ScheduleGeneratorImpl() {
 		workerPrefers = new ConcurrentHashMap<>();
 		schedule = new ConcurrentHashMap<>();
 		workingWeek = new ConcurrentHashMap<>();
+		workingWeekCopy = new ConcurrentHashMap<>();
 	}
 
 	@Override
@@ -90,9 +92,14 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		return list;
 	}
 
-	// !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 	@Override
 	public Map<String, List<ShiftView>> generateSchedule() {
+		if(workingWeekCopy.isEmpty() && !workingWeek.isEmpty()) {
+			workingWeekCopy.putAll(workingWeek);
+		}
+		if(workingWeek.isEmpty() && !workingWeekCopy.isEmpty()) {
+			workingWeek.putAll(workingWeekCopy);
+		}
 		List<GeneratorShift> allShifts = concatAllShifts();
 		Collections.sort(allShifts);
 		allShifts.forEach(shift -> {
@@ -101,6 +108,7 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 				shift.setWorkerNeeded(shift.getWorkerNeeded() - 1);
 			}
 		});
+		workingWeek.clear();
 		return schedule;
 	}
 	
@@ -129,7 +137,6 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 			});
 			return;
 		}
-		System.out.println("Worker is null in saveWorkerPriority function line 104 ScheduleGeneratorImpl");
 	}
 	
 	private void saveWorkerToSchedule(GeneratorWorker worker, String shiftName, String dayName) {
@@ -193,6 +200,7 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		// !day.getDayName().equals(companyRemoveWorkingDayDto.getDayName()));
 	}
 
+	@Override
 	public Map<String, List<GeneratorShift>> configureWeek(ScheduleConfigurationDto configuration) {
 		workingWeek.entrySet().forEach(entry -> {
 			List<GeneratorShift> day = entry.getValue();
@@ -200,5 +208,19 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 			workingWeek.replace(entry.getKey(), day);
 		});
 		return workingWeek;
+	}
+
+	@Override
+	public List<WorkerShiftView> getWorkerSchedule(Worker worker) {
+		List<WorkerShiftView> workerSchedule = new ArrayList<>();
+		schedule.entrySet().stream().forEach(entry -> {
+			List<ShiftView> day = entry.getValue();
+			day.stream().forEach(sv -> {
+				if(sv.getWorkerNames().contains(worker.getName())) {
+					workerSchedule.add(new WorkerShiftView(entry.getKey(), sv.getShiftName()));
+				}
+			});	
+		});
+		return workerSchedule;
 	}
 }

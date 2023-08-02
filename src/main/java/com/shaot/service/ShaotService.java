@@ -13,10 +13,9 @@ import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
-import com.shaot.dto.schedule.GeneratorShiftDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
-import com.shaot.dto.worker.WorkerScheduleDto;
+import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.model.Worker;
 import com.shaot.schedule.generator.GeneratorShift;
@@ -35,7 +34,7 @@ public interface ShaotService {
 	
 	Worker addCompanyToWorker (long workerId, long companyId);
 	
-	List<WorkerScheduleDto> getWeeklySchedule(long workerId);
+	List<WorkerShiftView> getWeeklySchedule(long companyId, long workerId);
 	
 	
 	//Company

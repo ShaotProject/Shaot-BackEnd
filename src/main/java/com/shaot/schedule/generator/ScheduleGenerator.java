@@ -8,8 +8,10 @@ import com.shaot.dto.company.CompanyAddWorkingDay;
 import com.shaot.dto.company.CompanyRemoveShiftDto;
 import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
-import com.shaot.dto.schedule.GeneratorShiftDto;
+import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
+import com.shaot.dto.worker.WorkerShiftView;
+import com.shaot.model.Worker;
 
 public interface ScheduleGenerator {
 	
@@ -28,5 +30,9 @@ public interface ScheduleGenerator {
 	void removeShift(CompanyRemoveShiftDto companyRemoveShiftDto);
 	
 	void removeWorkingDay(CompanyRemoveWorkingDayDto companyRemoveWorkingDayDto);
+
+	Map<String, List<GeneratorShift>> configureWeek(ScheduleConfigurationDto configuration);
+
+	List<WorkerShiftView> getWorkerSchedule(Worker worker);
 	
 }

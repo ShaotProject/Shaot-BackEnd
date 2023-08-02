@@ -8,7 +8,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
-import com.shaot.schedule.generator.ScheduleGenerator;
 import com.shaot.schedule.generator.ScheduleGeneratorImpl;
 
 import lombok.EqualsAndHashCode;

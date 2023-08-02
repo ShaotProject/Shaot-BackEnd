@@ -25,7 +25,7 @@ import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
-import com.shaot.dto.worker.WorkerScheduleDto;
+import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.model.Worker;
 import com.shaot.schedule.generator.GeneratorShift;
@@ -69,9 +69,9 @@ public class ShaotController {
 		return service.sendPrefers(prefers, workerId, companyId);
 	}
 	
-	@GetMapping("/shaot/worker/{id}/schedule")
-	public List<WorkerScheduleDto> getWeeklySchedule(@PathVariable long id) {
-		return service.getWeeklySchedule(id);
+	@GetMapping("/shaot/worker/{workerId}/company/{companyId}/schedule")
+	public List<WorkerShiftView> getWeeklySchedule(@PathVariable long workerId, @PathVariable long companyId) {
+		return service.getWeeklySchedule(companyId, workerId);
 	}
 	
 		
