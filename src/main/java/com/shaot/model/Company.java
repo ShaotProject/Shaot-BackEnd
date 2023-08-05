@@ -1,8 +1,10 @@
 package com.shaot.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.shaot.dto.company.CompanyShiftDto;
@@ -24,8 +26,9 @@ public class Company {
 	private String name;
 	@Setter
 	private String password;
-	private Map<Long, WorkerForCompanyDto> workers = new ConcurrentHashMap<>();
-	private List<CompanyShiftDto> shifts = new ArrayList<>();
+	private Set<WorkerForCompanyDto> workers = new HashSet<>();
+	private Map<Long, WorkerForCompanyDto> workersMap = new ConcurrentHashMap<>();
+	private Set<CompanyShiftDto> shifts = new HashSet<>();
 	private ScheduleGeneratorImpl generator = new ScheduleGeneratorImpl();
 	
 	public Company(long id, String name, String password) {
@@ -35,7 +38,7 @@ public class Company {
 	}
 	
 	public void addWorkerPrefers(Long workerId, List<WorkerPreferShiftsDto> workerPreferShiftsDtoList) {
-		WorkerForCompanyDto worker = workers.get(workerId);
+		WorkerForCompanyDto worker = workersMap.get(workerId);
 		if(worker != null) {
 			workerPreferShiftsDtoList.forEach(prefer -> generator.addPrefer(worker.getId(), worker.getName(), prefer));
 		}
@@ -46,15 +49,16 @@ public class Company {
 	}
 	
 	public void removeWorker(WorkerForCompanyDto worker) {
-		workers.remove(worker.getId());
+		workersMap.remove(worker.getId());
 	}
 	
 	public void addWorker(WorkerForCompanyDto worker) {
-		workers.put(worker.getId(), worker);	
+		workersMap.put(worker.getId(), worker);
+		workers.add(worker);
 	}
 	
 	public WorkerForCompanyDto getWorker(Long id) {
-		return workers.get(id);
+		return workersMap.get(id);
 	}
 	
 	public void addShift(CompanyShiftDto shift) {

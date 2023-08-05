@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +35,7 @@ import com.shaot.schedule.generator.ShiftView;
 import com.shaot.service.ShaotService;
 
 @RestController
+@CrossOrigin
 public class ShaotController {
 	
 	@Autowired
@@ -119,17 +122,17 @@ public class ShaotController {
 	}
 	
 	@PutMapping("shaot/company/{id}/shifts")
-	public List<CompanyShiftDto> addShift(@PathVariable  long id, @RequestBody CompanyAddShiftDto companyAddShiftDto) {
+	public Set<CompanyShiftDto> addShift(@PathVariable  long id, @RequestBody CompanyAddShiftDto companyAddShiftDto) {
 		return service.addShift(id, companyAddShiftDto);
 	}
 
 	@DeleteMapping("shaot/company/{id}/shifts")
-	public List<CompanyShiftDto> removeShift(@PathVariable long id, @RequestBody CompanyRemoveShiftDto companyRemoveShiftDto) {
+	public Set<CompanyShiftDto> removeShift(@PathVariable long id, @RequestBody CompanyRemoveShiftDto companyRemoveShiftDto) {
 		return service.removeShift(id, companyRemoveShiftDto);
 	}
 	
 	@DeleteMapping("shaot/company/{id}/days")
-	public List<CompanyShiftDto> removeWorkingDay(@PathVariable long id, @RequestBody CompanyRemoveWorkingDayDto companyRemoveWorkingDayDto) {
+	public Set<CompanyShiftDto> removeWorkingDay(@PathVariable long id, @RequestBody CompanyRemoveWorkingDayDto companyRemoveWorkingDayDto) {
 		return service.removeWorkingDay(id, companyRemoveWorkingDayDto);
 	}
 	

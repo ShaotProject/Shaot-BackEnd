@@ -2,6 +2,7 @@ package com.shaot.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -156,7 +157,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public List<CompanyShiftDto> addShift(long companyId, CompanyAddShiftDto companyShiftAddShiftDto) {
+	public Set<CompanyShiftDto> addShift(long companyId, CompanyAddShiftDto companyShiftAddShiftDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
 		company.addShift(modelMapper.map(companyShiftAddShiftDto, CompanyShiftDto.class));
 		companiesRepository.save(company);
@@ -164,7 +165,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public List<CompanyShiftDto> addWorkingDay(long companyId, CompanyAddWorkingDay companyAddWorkingDayDto) {
+	public Set<CompanyShiftDto> addWorkingDay(long companyId, CompanyAddWorkingDay companyAddWorkingDayDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
 		company.getGenerator().addWorkingDay(companyAddWorkingDayDto);
 		companiesRepository.save(company);
@@ -172,7 +173,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public List<CompanyShiftDto> removeShift(long companyId, CompanyRemoveShiftDto companyRemoveShiftDto) {
+	public Set<CompanyShiftDto> removeShift(long companyId, CompanyRemoveShiftDto companyRemoveShiftDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
 		company.getGenerator().removeShift(companyRemoveShiftDto);
 		companiesRepository.save(company);
@@ -180,7 +181,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public List<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto) {
+	public Set<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
 		company.getGenerator().removeWorkingDay(removeWorkingDayDto);
 		companiesRepository.save(company);

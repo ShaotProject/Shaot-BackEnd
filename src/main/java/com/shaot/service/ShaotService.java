@@ -2,6 +2,7 @@ package com.shaot.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.shaot.dto.company.CompanyAddShiftDto;
 import com.shaot.dto.company.CompanyAddWorkingDay;
@@ -50,13 +51,13 @@ public interface ShaotService {
 
 	Map<String, List<ShiftView>> generateSchedule(long companyId);
 
-	List<CompanyShiftDto> addShift(long companyId, CompanyAddShiftDto companyShiftAddShiftDto);
+	Set<CompanyShiftDto> addShift(long companyId, CompanyAddShiftDto companyShiftAddShiftDto);
 
-	List<CompanyShiftDto> addWorkingDay(long companyId, CompanyAddWorkingDay companyAddWorkingDayDto);
+	Set<CompanyShiftDto> addWorkingDay(long companyId, CompanyAddWorkingDay companyAddWorkingDayDto);
 
-	List<CompanyShiftDto> removeShift(long companyId, CompanyRemoveShiftDto companyRemoveShiftDto);
+	Set<CompanyShiftDto> removeShift(long companyId, CompanyRemoveShiftDto companyRemoveShiftDto);
 
-	List<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto);
+	Set<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto);
 	
 	Map<String, List<GeneratorShift>> generateEmptyWeek(long companyId, CompanyWeekGeneratorDto companyWeekGeneratorDto);
 	
