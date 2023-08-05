@@ -26,6 +26,8 @@ public class Company {
 	private String name;
 	@Setter
 	private String password;
+	@Setter
+	private double generalWage;
 	private Set<WorkerForCompanyDto> workers = new HashSet<>();
 	private Map<Long, WorkerForCompanyDto> workersMap = new ConcurrentHashMap<>();
 	private Set<CompanyShiftDto> shifts = new HashSet<>();
@@ -48,11 +50,13 @@ public class Company {
 		return generator.getWorkerPrefers(workerId);
 	}
 	
-	public void removeWorker(WorkerForCompanyDto worker) {
-		workersMap.remove(worker.getId());
+	public void removeWorker(long workerId) {
+		WorkerForCompanyDto worker = workersMap.remove(workerId);
+		workers.remove(worker);
 	}
 	
 	public void addWorker(WorkerForCompanyDto worker) {
+		worker.setWage(generalWage);
 		workersMap.put(worker.getId(), worker);
 		workers.add(worker);
 	}
@@ -64,4 +68,27 @@ public class Company {
 	public void addShift(CompanyShiftDto shift) {
 		shifts.add(shift);
 	}
+	
+	public void setIndividualWage(long workerId, double newWage) {
+		WorkerForCompanyDto worker = workersMap.get(workerId);
+		workers.remove(worker);
+		worker.setWage(newWage);
+		workers.add(worker);
+		workersMap.put(workerId, worker);
+	}
+	
+	public WorkerForCompanyDto updateWorker(long workerId, String newName) {
+		WorkerForCompanyDto worker = workersMap.get(workerId);
+		worker.setName(newName);
+		removeWorker(worker.getId());
+		addWorker(worker);
+		return worker;
+	}
+	
+	
+	
+	
+	
+	
+	
 }

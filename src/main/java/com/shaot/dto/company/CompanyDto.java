@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 public class CompanyDto {
 	private long id;
 	private String name;
+	private double generalWage;
 	private String password;
 }

@@ -23,12 +23,15 @@ import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
 import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
+import com.shaot.dto.company.CompanyWageDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
+import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
+import com.shaot.dto.worker.WorkerView;
 import com.shaot.model.Worker;
 import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
@@ -43,27 +46,41 @@ public class ShaotController {
 	
 	
 	////////////////////////////////
+	////////////Admin///////////////
+	////////////////////////////////
+	
+	@DeleteMapping("shaot/company/{companyId}")
+	public CompanyView deleteCompanyFromDataBase(@PathVariable long companyId) {
+		return service.deleteCompanyFromDataBase(companyId);
+	}
+	
+	@DeleteMapping("shaot/worker/{workerId}")
+	public WorkerView deleteWorkerFromDataBase(@PathVariable long workerId) {
+		return service.deleteWorkerFromDataBase(workerId);
+	}
+	
+	////////////////////////////////
 	////////////Worker//////////////
 	////////////////////////////////
 	
 	
 	@PostMapping("/shaot/worker")
-	public Worker addWorker(@RequestBody WorkerDto workerDto) {
+	public WorkerView addWorker(@RequestBody WorkerDto workerDto) {
 		return service.addWorker(workerDto);
 	}
 	
 	@PutMapping("/shaot/worker/{id}")
-	public Worker updateWorker(@PathVariable long id, @RequestBody WorkerUpdateDto workerUpdate) {
+	public WorkerView updateWorker(@PathVariable long id, @RequestBody WorkerUpdateDto workerUpdate) {
 		return service.updateWorker(workerUpdate, id);
 	}
 	
 	@GetMapping("/shaot/worker/{id}")
-	public Worker findWorkerById(@PathVariable long id) {
+	public WorkerView findWorkerById(@PathVariable long id) {
 		return service.findWorker(id);
 	}
 	
 	@PutMapping("/shaot/worker/{workerId}/company/{companyId}")
-	public Worker addCompanyToWorker(@PathVariable long workerId, @PathVariable long companyId) {
+	public WorkerView addCompanyToWorker(@PathVariable long workerId, @PathVariable long companyId) {
 		return service.addCompanyToWorker(workerId, companyId);
 	}
 	
@@ -140,4 +157,34 @@ public class ShaotController {
 	public Map<String, List<GeneratorShift>> configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
 		return service.configurateSchedule(id, configuration);
 	}
+	
+	@PutMapping("shaot/company/{id}/wage")
+	public Set<WorkerForCompanyDto> setGeneralWage(@PathVariable long id, @RequestBody CompanyWageDto companyWageDto) {
+		return service.setGeneralWage(id, companyWageDto);
+	}
+	
+	@PutMapping("shaot/company/{companyId}/wage/worker/{workerId}")
+	public WorkerForCompanyDto setIndividualWage(@PathVariable long companyId, @PathVariable long workerId, @RequestBody CompanyWageDto companyWageDto) {
+		return service.setIndividualWage(companyId, workerId, companyWageDto);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

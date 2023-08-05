@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
@@ -11,7 +12,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of="id")
 public class WorkerForCompanyDto {
 	private long id;
+	@Setter
 	private String name;
+	@Setter
+	private double wage;
 	private int shiftsCounter;
 	private int priorityByShiftsNumber;
 	

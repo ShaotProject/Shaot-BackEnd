@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "1e8dc361-d01c-494e-a74f-11af622adab8",
+		"name": "WorkerApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21491619"
+	},
+	"item": [
+		{
+			"name": "Find Worker By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/worker/5000",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"worker",
+						"5000"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Find Worker By Id",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/worker/1000",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"worker",
+								"1000"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n    \"id\": 1000,\r\n    \"name\": \"Eduard\",\r\n    \"password\": \"1234\",\r\n    \"companies\": [\r\n        {\r\n            \"id\": 1100,\r\n            \"name\": \"Tempo\"\r\n        }\r\n    ],\r\n    \"shifts\": []\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Add Worker To Data Base (Not Adding to any Company)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 6000,\r\n    \"name\": \"John Smith\",\r\n    \"password\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cloudUrl}}/worker",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"worker"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add prefered shifts to Data Base",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"dayName\": \"sunday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"monday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"tuesday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"wednesday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"thursday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"friday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"saturday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cloudUrll}}/worker/5000/prefers/1200",
+					"host": [
+						"{{cloudUrll}}"
+					],
+					"path": [
+						"worker",
+						"5000",
+						"prefers",
+						"1200"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get workers weekly schedule",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/worker/6000/company/1200/schedule",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"worker",
+						"6000",
+						"company",
+						"1200",
+						"schedule"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Worker",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Jonh NotSmith\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cloudUrl}}/worker/6000",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"worker",
+						"6000"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/shaot"
+		}
+	]
+}

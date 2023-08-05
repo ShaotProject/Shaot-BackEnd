@@ -2,7 +2,7 @@ package com.shaot.dto.company;
 
 import java.util.List;
 
-import com.shaot.dto.worker.WorkerForCompanyDto;
+import com.shaot.dto.worker.WorkerForCompanyView;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class CompanyView {
 	String id;
 	String name;
-	List<WorkerForCompanyDto> workers;
+	double generalWage;
+	List<WorkerForCompanyView> workers;
 	List<CompanyShiftDto> shifts;
 }

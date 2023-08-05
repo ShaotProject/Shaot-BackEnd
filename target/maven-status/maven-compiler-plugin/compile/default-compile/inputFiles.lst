@@ -7,6 +7,7 @@ C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\Shift
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyAddShiftDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyWorkingDayDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyView.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyWageDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerPreferShiftsDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerScheduleDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyAddWorkingDay.java
@@ -29,7 +30,9 @@ C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\service\ShaotServiceImpl
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\ScheduleGeneratorImpl.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerDayDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\controller\ShaotController.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\EntityNotFoundException.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerForCompanyView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\Shaot3Application.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\model\Company.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyUpdateDto.java

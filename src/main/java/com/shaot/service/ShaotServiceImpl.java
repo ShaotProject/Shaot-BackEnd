@@ -18,6 +18,7 @@ import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
 import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
+import com.shaot.dto.company.CompanyWageDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
@@ -25,6 +26,7 @@ import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
+import com.shaot.dto.worker.WorkerView;
 import com.shaot.model.Company;
 import com.shaot.model.Worker;
 import com.shaot.repository.CompaniesRepository;
@@ -43,32 +45,64 @@ public class ShaotServiceImpl implements ShaotService {
 	final ModelMapper modelMapper;
 	
 	@Override
-	public Worker addWorker(WorkerDto workerDto) {
-		if(!workersRepository.existsById(workerDto.getId())) {
-			return workersRepository.save(modelMapper.map(workerDto, Worker.class));
-		}
-		return null;
+	public WorkerView deleteWorkerFromDataBase(long workerId) {
+		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + workerId + "not found"));
+		workersRepository.delete(worker);
+		worker.getCompanies().forEach(c -> {
+			Company company = companiesRepository.findCompanyById(c.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + c.getId() + "not found"));
+			company.removeWorker(worker.getId());
+			companiesRepository.save(company);
+		});
+		return modelMapper.map(worker, WorkerView.class);
 	}
 
 	@Override
-	public Worker updateWorker(WorkerUpdateDto workerUpdateDto, long id) {
+	public CompanyView deleteCompanyFromDataBase(long companyId) {
+		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
+		companiesRepository.delete(company);
+		company.getWorkers().forEach(w -> {
+			Worker worker = workersRepository.findById(w.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + w.getId() + "not found"));
+			worker.removeCompany(modelMapper.map(company, CompanyForWorkerDto.class));
+			workersRepository.save(worker);
+		});
+		return modelMapper.map(company, CompanyView.class);
+	}
+	
+	@Override
+	public WorkerView addWorker(WorkerDto workerDto) {
+		if(!workersRepository.existsById(workerDto.getId())) {
+			Worker worker = workersRepository.save(modelMapper.map(workerDto, Worker.class));
+			return modelMapper.map(worker, WorkerView.class);
+		}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + workerDto.getId() + "already exists");
+	}
+
+	@Override
+	public WorkerView updateWorker(WorkerUpdateDto workerUpdateDto, long id) {
 		Worker worker = workersRepository.findWorkerById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + id + "not found"));
 		worker.setName(workerUpdateDto.getName());
-		worker.setPassword(workerUpdateDto.getPassword());
-		return workersRepository.save(worker);
+		workersRepository.save(worker);
+		worker.getCompanies().forEach(c -> {
+			Company company = companiesRepository.findCompanyById(c.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + c.getId() + "not found"));
+			company.updateWorker(worker.getId(), worker.getName());
+			companiesRepository.save(company);
+		});
+		return modelMapper.map(worker, WorkerView.class);
 	}
 
 	@Override
-	public Worker addCompanyToWorker(long workerId, long companyId) {
+	public WorkerView addCompanyToWorker(long workerId, long companyId) {
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + workerId + "not found"));
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
 		worker.addCompany(modelMapper.map(company, CompanyForWorkerDto.class));
-		return workersRepository.save(worker);
+		workersRepository.save(worker);
+		return modelMapper.map(worker, WorkerView.class);
 	}
 
 	@Override
-	public Worker findWorker(long id) {
-		return workersRepository.findWorkerById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + id + "not found"));	
+	public WorkerView findWorker(long id) {
+		Worker worker = workersRepository.findWorkerById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + id + "not found"));
+		return modelMapper.map(worker, WorkerView.class);
 	}
 
 	@Override
@@ -123,16 +157,22 @@ public class ShaotServiceImpl implements ShaotService {
 		company.addWorker(new WorkerForCompanyDto(workerId, worker.getName()));
 		if(!worker.getCompanies().contains(new CompanyForWorkerDto(company.getId()))) {
 			worker.addCompany(modelMapper.map(company, CompanyForWorkerDto.class));
+			worker.setWage(company.getGeneralWage());
 		}
 		workersRepository.save(worker);
-		return modelMapper.map(companiesRepository.save(company), CompanyView.class);
+		companiesRepository.save(company);
+		return modelMapper.map(company, CompanyView.class);
 	}
 
 	@Override
 	public CompanyView updateCompany(CompanyUpdateDto companyUpdateDto, long id) {
 		Company company = companiesRepository.findCompanyById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + id + "not found"));
 		company.setName(companyUpdateDto.getName());
-		company.setPassword(companyUpdateDto.getPassword());
+		company.getWorkers().forEach(w -> {
+			Worker worker = workersRepository.findById(w.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + w.getId() + "not found"));
+			worker.updateCompany(company.getId(), company.getName());
+			workersRepository.save(worker);
+		});
 		companiesRepository.save(company);
 		return modelMapper.map(company, CompanyView.class);
 	}
@@ -143,7 +183,7 @@ public class ShaotServiceImpl implements ShaotService {
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + workerId + "not found"));
 		worker.removeCompany(modelMapper.map(company, CompanyForWorkerDto.class));
 		workersRepository.save(worker);
-		company.removeWorker(modelMapper.map(worker, WorkerForCompanyDto.class));
+		company.removeWorker(worker.getId());
 		companiesRepository.save(company);
 		return modelMapper.map(company, CompanyView.class);
 	}
@@ -202,6 +242,32 @@ public class ShaotServiceImpl implements ShaotService {
 		Map<String, List<GeneratorShift>> workingWeek = company.getGenerator().configureWeek(configuration);
 		companiesRepository.save(company);
 		return workingWeek;
+	}
+
+	@Override
+	public WorkerForCompanyDto setIndividualWage(long companyId, long workerId, CompanyWageDto companyWageDto) {
+		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
+		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + workerId + "not found"));
+		worker.setWage(companyWageDto.getNewWage());
+		worker.setIndividualWage(true);
+		workersRepository.save(worker);
+		company.setIndividualWage(worker.getId(), companyWageDto.getNewWage());
+		companiesRepository.save(company);
+		return modelMapper.map(worker, WorkerForCompanyDto.class);
+	}
+
+	@Override
+	public Set<WorkerForCompanyDto> setGeneralWage(long companyId, CompanyWageDto companyWageDto) {
+		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
+		company.setGeneralWage(companyWageDto.getNewWage());
+		company.getWorkers().forEach(w -> {
+			w.setWage(companyWageDto.getNewWage());
+			Worker worker = workersRepository.findWorkerById(w.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + w.getId() + "not found"));
+			worker.setWage(companyWageDto.getNewWage());
+			workersRepository.save(worker);
+		});
+		companiesRepository.save(company);
+		return company.getWorkers();
 	}
 
 	

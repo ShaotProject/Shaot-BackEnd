@@ -7,5 +7,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CompanyUpdateDto {
 	private String name;
-	private String password;
 }
