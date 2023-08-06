@@ -17,6 +17,7 @@ import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
+import com.shaot.dto.worker.WorkerForCompanyView;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
@@ -56,9 +57,9 @@ public interface ShaotService {
 
 	CompanyView removeWorkerFromCompany(long companyId, long workerId);
 	
-	WorkerForCompanyDto setIndividualWage (long companyId, long workerId, CompanyWageDto companyWageDto);
+	WorkerForCompanyView setIndividualWage (long companyId, long workerId, CompanyWageDto companyWageDto);
 	
-	Set<WorkerForCompanyDto> setGeneralWage(long companyId, CompanyWageDto companyWageDto);
+	Set<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto);
 
 	Map<String, List<ShiftView>> generateSchedule(long companyId);
 

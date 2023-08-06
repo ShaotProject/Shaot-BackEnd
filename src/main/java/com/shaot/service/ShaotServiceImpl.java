@@ -1,5 +1,6 @@
 package com.shaot.service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
+import com.shaot.dto.worker.WorkerForCompanyView;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
@@ -245,7 +247,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public WorkerForCompanyDto setIndividualWage(long companyId, long workerId, CompanyWageDto companyWageDto) {
+	public WorkerForCompanyView setIndividualWage(long companyId, long workerId, CompanyWageDto companyWageDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + workerId + "not found"));
 		worker.setWage(companyWageDto.getNewWage());
@@ -253,21 +255,22 @@ public class ShaotServiceImpl implements ShaotService {
 		workersRepository.save(worker);
 		company.setIndividualWage(worker.getId(), companyWageDto.getNewWage());
 		companiesRepository.save(company);
-		return modelMapper.map(worker, WorkerForCompanyDto.class);
+		return modelMapper.map(worker, WorkerForCompanyView.class);
 	}
 
 	@Override
-	public Set<WorkerForCompanyDto> setGeneralWage(long companyId, CompanyWageDto companyWageDto) {
+	public Set<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company " + companyId + "not found"));
 		company.setGeneralWage(companyWageDto.getNewWage());
 		company.getWorkers().forEach(w -> {
-			w.setWage(companyWageDto.getNewWage());
 			Worker worker = workersRepository.findWorkerById(w.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Worker " + w.getId() + "not found"));
-			worker.setWage(companyWageDto.getNewWage());
+			if(!worker.isIndividualWage()) {
+				worker.setWage(companyWageDto.getNewWage());
+			}
 			workersRepository.save(worker);
 		});
 		companiesRepository.save(company);
-		return company.getWorkers();
+		return new HashSet<>(company.getWorkers().stream().map(w -> modelMapper.map(w, WorkerForCompanyView.class)).toList());
 	}
 
 	

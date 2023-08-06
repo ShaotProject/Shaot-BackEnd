@@ -26,7 +26,6 @@ public class Company {
 	private String name;
 	@Setter
 	private String password;
-	@Setter
 	private double generalWage;
 	private Set<WorkerForCompanyDto> workers = new HashSet<>();
 	private Map<Long, WorkerForCompanyDto> workersMap = new ConcurrentHashMap<>();
@@ -73,6 +72,7 @@ public class Company {
 		WorkerForCompanyDto worker = workersMap.get(workerId);
 		workers.remove(worker);
 		worker.setWage(newWage);
+		worker.setIndividualWage(true);
 		workers.add(worker);
 		workersMap.put(workerId, worker);
 	}
@@ -83,6 +83,21 @@ public class Company {
 		removeWorker(worker.getId());
 		addWorker(worker);
 		return worker;
+	}
+	
+	public void setGeneralWage(double newWage) {
+		workersMap.entrySet().stream().forEach(entry -> {
+			WorkerForCompanyDto worker = entry.getValue();
+			if(!worker.isIndividualWage()) {
+				worker.setWage(newWage);
+			}
+		});
+		workers.forEach(w -> {
+			if(!w.isIndividualWage()) {
+				w.setWage(newWage);
+			}
+		});
+		
 	}
 	
 	

@@ -53,7 +53,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1200,\r\n    \"name\": \"G-one\",\r\n    \"generalWage\": 38.0,\r\n    \"password\": \"1234\"\r\n}",
+					"raw": "{\r\n    \"id\": 1300,\r\n    \"name\": \"Tempo\",\r\n    \"generalWage\": 35.0,\r\n    \"password\": \"1234\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -61,9 +61,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{cloudUrll}}/company",
+					"raw": "{{cloudUrl}}/company",
 					"host": [
-						"{{cloudUrll}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"company"
@@ -78,15 +78,15 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrll}}/company/1200/worker/5000",
+					"raw": "{{cloudUrl}}/company/1200/worker/6000",
 					"host": [
-						"{{cloudUrll}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
 						"1200",
 						"worker",
-						"5000"
+						"6000"
 					]
 				}
 			},
@@ -98,9 +98,9 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrll}}/company/1200/schedule",
+					"raw": "{{cloudUrl}}/company/1200/schedule",
 					"host": [
-						"{{cloudUrll}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
@@ -146,9 +146,9 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrll}}/company/1200/worker/6000",
+					"raw": "{{cloudUrl}}/company/1200/worker/6000",
 					"host": [
-						"{{cloudUrll}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
@@ -194,7 +194,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"newWage\": 39.0\r\n}",
+					"raw": "{\r\n    \"newWage\": 41.0\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -202,9 +202,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200/wage",
+					"raw": "{{baseUrl}}/company/1200/wage",
 					"host": [
-						"{{cloudUrl}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"company",
@@ -212,6 +212,14 @@
 						"wage"
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set individual wage",
+			"request": {
+				"method": "GET",
+				"header": []
 			},
 			"response": []
 		}

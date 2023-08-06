@@ -28,6 +28,7 @@ import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
+import com.shaot.dto.worker.WorkerForCompanyView;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
@@ -159,12 +160,12 @@ public class ShaotController {
 	}
 	
 	@PutMapping("shaot/company/{id}/wage")
-	public Set<WorkerForCompanyDto> setGeneralWage(@PathVariable long id, @RequestBody CompanyWageDto companyWageDto) {
+	public Set<WorkerForCompanyView> setGeneralWage(@PathVariable long id, @RequestBody CompanyWageDto companyWageDto) {
 		return service.setGeneralWage(id, companyWageDto);
 	}
 	
 	@PutMapping("shaot/company/{companyId}/wage/worker/{workerId}")
-	public WorkerForCompanyDto setIndividualWage(@PathVariable long companyId, @PathVariable long workerId, @RequestBody CompanyWageDto companyWageDto) {
+	public WorkerForCompanyView setIndividualWage(@PathVariable long companyId, @PathVariable long workerId, @RequestBody CompanyWageDto companyWageDto) {
 		return service.setIndividualWage(companyId, workerId, companyWageDto);
 	}
 	

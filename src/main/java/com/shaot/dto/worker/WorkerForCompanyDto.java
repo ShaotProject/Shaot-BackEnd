@@ -16,6 +16,8 @@ public class WorkerForCompanyDto {
 	private String name;
 	@Setter
 	private double wage;
+	@Setter
+	private boolean individualWage;
 	private int shiftsCounter;
 	private int priorityByShiftsNumber;
 	
