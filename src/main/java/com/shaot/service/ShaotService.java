@@ -59,7 +59,7 @@ public interface ShaotService {
 	
 	WorkerForCompanyView setIndividualWage (long companyId, long workerId, CompanyWageDto companyWageDto);
 	
-	Set<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto);
+	List<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto);
 
 	Map<String, List<ShiftView>> generateSchedule(long companyId);
 

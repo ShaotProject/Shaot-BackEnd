@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,12 @@ import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.dto.worker.WorkerView;
+import com.shaot.exceptions.AccessToCompanyRestrictedException;
+import com.shaot.exceptions.AcessToWorkerRestrictedException;
+import com.shaot.exceptions.CompanyAlreadyExistsException;
+import com.shaot.exceptions.CompanyNotFoundException;
+import com.shaot.exceptions.ResponseExceptionDto;
+import com.shaot.exceptions.WorkerNotFoundException;
 import com.shaot.model.Worker;
 import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
@@ -44,6 +51,31 @@ public class ShaotController {
 	
 	@Autowired
 	ShaotService service;
+	
+	@ExceptionHandler(CompanyAlreadyExistsException.class)
+	public ResponseExceptionDto handleCompanyExistsException() {
+		return new ResponseExceptionDto(403, "Company already exists");
+	}
+	
+	@ExceptionHandler(CompanyNotFoundException.class)
+	public ResponseExceptionDto handleCompanyNotFoundException() {
+		return new ResponseExceptionDto(404, "Company not found");
+	}
+	
+	@ExceptionHandler(WorkerNotFoundException.class)
+	public ResponseExceptionDto handleWorkerNotFoundException() {
+		return new ResponseExceptionDto(404, "Worker not dound");
+	}
+	
+	@ExceptionHandler(AccessToCompanyRestrictedException.class)
+	public ResponseExceptionDto handleAccessToCompanyRestrictedException() {
+		return new ResponseExceptionDto(403, "Worker have no acess to the company");
+	}
+	
+	@ExceptionHandler(AcessToWorkerRestrictedException.class)
+	public ResponseExceptionDto handleAccessToWorkerRestrictedException() {
+		return new ResponseExceptionDto(403, "Company have no acess to the worker");
+	}
 	
 	
 	////////////////////////////////
@@ -160,7 +192,7 @@ public class ShaotController {
 	}
 	
 	@PutMapping("shaot/company/{id}/wage")
-	public Set<WorkerForCompanyView> setGeneralWage(@PathVariable long id, @RequestBody CompanyWageDto companyWageDto) {
+	public List<WorkerForCompanyView> setGeneralWage(@PathVariable long id, @RequestBody CompanyWageDto companyWageDto) {
 		return service.setGeneralWage(id, companyWageDto);
 	}
 	
