@@ -1,5 +1,7 @@
 package com.shaot.schedule.generator;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -8,6 +10,7 @@ import java.util.Set;
 
 import com.shaot.dto.schedule.GeneratorShiftDto;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,14 +18,16 @@ import lombok.Setter;
 @Getter
 @EqualsAndHashCode(of="shiftName")
 public class GeneratorShift implements Comparable<GeneratorShift>{
-	private String shiftName;
-	private String dayName;
+	private LocalDateTime shiftName;
+	private LocalDateTime shiftStart;
+	private LocalDateTime shiftEnd;
+	private LocalDate dayName;
 	private List<String> workersOnShift;
 	@Setter
 	private int workerNeeded;
 	private Set<GeneratorWorker> available;
 	
-	public GeneratorShift(String shiftName, String dayName) {
+	public GeneratorShift(LocalDateTime shiftName, LocalDate dayName, LocalDateTime shiftStart, LocalDateTime shiftEnd) {
 		this.shiftName = shiftName;
 		this.dayName = dayName;
 		this.available = new HashSet<>();
@@ -35,7 +40,9 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 			Collections.sort(workersAvailableList);
 			GeneratorWorker worker = workersAvailableList.get(0);
 			available.remove(worker);
-			return worker;
+			if(!worker.getRestrict().contains(shiftName)) {
+				return worker;
+			}
 		}
 		return null;
 	}

@@ -1,10 +1,13 @@
 package com.shaot.controller;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,6 +30,7 @@ import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
+import com.shaot.dto.company.ScheduleConfigurationShiftTime;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerForCompanyView;
@@ -40,8 +44,6 @@ import com.shaot.exceptions.CompanyAlreadyExistsException;
 import com.shaot.exceptions.CompanyNotFoundException;
 import com.shaot.exceptions.ResponseExceptionDto;
 import com.shaot.exceptions.WorkerNotFoundException;
-import com.shaot.model.Worker;
-import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
 import com.shaot.service.ShaotService;
 
@@ -81,6 +83,16 @@ public class ShaotController {
 	////////////////////////////////
 	////////////Admin///////////////
 	////////////////////////////////
+	
+	@GetMapping("shaot/workers")
+	public List<WorkerView> getAllWorkers() {
+		return service.getAllWorkers();
+	}
+	
+	@GetMapping("shaot/companies")
+	public List<CompanyView> getAllCompanies() {
+		return service.getAllCompanies();
+	}
 	
 	@DeleteMapping("shaot/company/{companyId}")
 	public CompanyView deleteCompanyFromDataBase(@PathVariable long companyId) {
@@ -132,20 +144,31 @@ public class ShaotController {
 	////////////Company/////////////
 	////////////////////////////////
 	
-	CompanyWeekGeneratorDto basicWeek = CompanyWeekGeneratorDto
+	LocalDate defaultWeekStart = LocalDate.now();
+	List<ScheduleConfigurationShiftTime> shiftTimes = buildDefaultShiftTimes();
+	
+	private List<ScheduleConfigurationShiftTime> buildDefaultShiftTimes() {
+		List<ScheduleConfigurationShiftTime> shiftTimes = new ArrayList<>();
+		shiftTimes.add(new ScheduleConfigurationShiftTime(LocalTime.of(7, 0), LocalTime.of(15, 0)));
+		shiftTimes.add(new ScheduleConfigurationShiftTime(LocalTime.of(15, 0), LocalTime.of(23, 0)));
+		return shiftTimes;
+	}
+	
+	ScheduleConfigurationDto basicWeek = ScheduleConfigurationDto
 			.builder()
-			.dayNames(new ArrayList<String>(Arrays.asList("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday")))
-			.shiftNames(new ArrayList<String>(Arrays.asList("morning", "afternoon")))
-			.workersPerShift(2)
+			.weekStart(defaultWeekStart)
+			.weekEnd(defaultWeekStart.plusDays(7))
+			.workersNumberPerShift(1)
+			.shiftsTime(shiftTimes)
 			.build();
 	
 	@PostMapping("/shaot/company")
 	public CompanyView addCompany(@RequestBody CompanyDto companyDto) {
 		CompanyView companyView = service.addCompanyToRepository(companyDto);
-		service.generateEmptyWeek(Integer.valueOf(companyView.getId()), basicWeek);
+		service.generateEmptyWeek(Long.valueOf(companyView.getId()), basicWeek);
 		return companyView;
 	}
-	
+
 	@GetMapping("/shaot/company/{id}")
 	public CompanyView findCompany(@PathVariable long id) {
 		return service.findCompany(id);
@@ -167,7 +190,7 @@ public class ShaotController {
 	}
 	
 	@GetMapping("shaot/company/{id}/schedule")
-	public Map<String, List<ShiftView>>  generateSchedule(@PathVariable long id) {
+	public Map<LocalDate, List<ShiftView>>  generateSchedule(@PathVariable long id) {
 		return service.generateSchedule(id);
 	}
 	
@@ -187,7 +210,7 @@ public class ShaotController {
 	}
 	
 	@PutMapping("shaot/company/{id}/schedule/configure")
-	public Map<String, List<GeneratorShift>> configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
+	public Map<LocalDate, List<ShiftView>> configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
 		return service.configurateSchedule(id, configuration);
 	}
 	

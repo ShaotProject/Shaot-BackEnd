@@ -32,10 +32,11 @@ public class Company {
 	private Set<CompanyShiftDto> shifts = new HashSet<>();
 	private ScheduleGeneratorImpl generator = new ScheduleGeneratorImpl();
 	
-	public Company(long id, String name, String password) {
+	public Company(long id, String name, String password, double generalWage) {
 		this.id = id;
 		this.name = name;
 		this.password = password;
+		this.generalWage = generalWage;
 	}
 	
 	public void addWorkerPrefers(Long workerId, List<WorkerPreferShiftsDto> workerPreferShiftsDtoList) {

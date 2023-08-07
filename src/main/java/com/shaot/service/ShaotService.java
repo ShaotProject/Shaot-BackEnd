@@ -1,5 +1,6 @@
 package com.shaot.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,8 @@ public interface ShaotService {
 	//Admin
 	WorkerView deleteWorkerFromDataBase(long workerId);
 	CompanyView deleteCompanyFromDataBase(long companyId);
+	List<WorkerView> getAllWorkers();
+	List<CompanyView> getAllCompanies();
 	
 	//Worker
 	WorkerView addWorker(WorkerDto workerDto);
@@ -61,7 +64,7 @@ public interface ShaotService {
 	
 	List<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto);
 
-	Map<String, List<ShiftView>> generateSchedule(long companyId);
+	Map<LocalDate, List<ShiftView>> generateSchedule(long companyId);
 
 	Set<CompanyShiftDto> addShift(long companyId, CompanyAddShiftDto companyShiftAddShiftDto);
 
@@ -71,9 +74,9 @@ public interface ShaotService {
 
 	Set<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto);
 	
-	Map<String, List<GeneratorShift>> generateEmptyWeek(long companyId, CompanyWeekGeneratorDto companyWeekGeneratorDto);
+	Map<LocalDate, List<ShiftView>> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto);
 	
-	Map<String, List<GeneratorShift>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
+	Map<LocalDate, List<ShiftView>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
 	
 	
 }

@@ -1,5 +1,6 @@
 package com.shaot.service;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,16 @@ public class ShaotServiceImpl implements ShaotService {
 	final WorkersRepository workersRepository;
 	final CompaniesRepository companiesRepository;
 	final ModelMapper modelMapper;
+	
+	@Override
+	public List<WorkerView> getAllWorkers() {
+		return workersRepository.findAll().stream().map(w -> modelMapper.map(w, WorkerView.class)).toList();
+	}
+
+	@Override
+	public List<CompanyView> getAllCompanies() {
+		return companiesRepository.findAll().stream().map(w -> modelMapper.map(w, CompanyView.class)).toList();
+	}
 	
 	@Override
 	public WorkerView deleteWorkerFromDataBase(long workerId) {
@@ -144,7 +155,8 @@ public class ShaotServiceImpl implements ShaotService {
 	@Override
 	public CompanyView addCompanyToRepository(CompanyDto companyDto) {
 		if(!companiesRepository.existsById(companyDto.getId())) {
-			Company company = companiesRepository.save(modelMapper.map(companyDto, Company.class));
+			Company company = new Company(companyDto.getId(), companyDto.getName(), companyDto.getPassword(), companyDto.getGeneralWage());
+			companiesRepository.save(company);
 			return modelMapper.map(company, CompanyView.class);
 		}
 		throw new CompanyAlreadyExistsException(HttpStatus.FORBIDDEN);
@@ -195,9 +207,9 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Map<String, List<ShiftView>> generateSchedule(long companyId) {
+	public Map<LocalDate, List<ShiftView>> generateSchedule(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Map<String, List<ShiftView>> schedule = company.getGenerator().generateSchedule();
+		Map<LocalDate, List<ShiftView>> schedule = company.getGenerator().generateSchedule();
 		companiesRepository.save(company);
 		return schedule;
 	}
@@ -235,19 +247,19 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Map<String, List<GeneratorShift>> generateEmptyWeek(long companyId, CompanyWeekGeneratorDto companyWeekGeneratorDto) {
+	public Map<LocalDate, List<ShiftView>> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Map<String, List<GeneratorShift>> workingWeek = company.getGenerator().generateWeek(companyWeekGeneratorDto);
+		Map<LocalDate, List<GeneratorShift>> workingWeek = company.getGenerator().generateWeek(companyWeekGeneratorDto);
 		companiesRepository.save(company);
-		return workingWeek;
+		return company.getGenerator().getSchedule();
 	}
 
 	@Override
-	public Map<String, List<GeneratorShift>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
+	public Map<LocalDate, List<ShiftView>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Map<String, List<GeneratorShift>> workingWeek = company.getGenerator().configureWeek(configuration);
+		Map<LocalDate, List<GeneratorShift>> workingWeek = company.getGenerator().generateWeek(configuration);
 		companiesRepository.save(company);
-		return workingWeek;
+		return company.getGenerator().getSchedule();
 	}
 
 	@Override

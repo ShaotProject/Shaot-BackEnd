@@ -118,7 +118,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"workersNumberPerShift\": 2\r\n}",
+					"raw": "{\r\n    \"weekStart\": \"2023-08-06\",\r\n    \"weekEnd\": \"2023-08-12\",\r\n    \"shifts\": [\r\n        {\r\n            \"start\": \"07:00:00\",\r\n            \"end\": \"15:00:00\"\r\n        },\r\n        {\r\n            \"start\": \"15:00:00\",\r\n            \"end\": \"23:00:00\"\r\n        }\r\n    ],\r\n    \"workersNumberPerShift\": 2\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

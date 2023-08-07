@@ -1,5 +1,8 @@
 package com.shaot.schedule.generator;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,16 +20,20 @@ public class GeneratorWorker implements Comparable<GeneratorWorker> {
 	private String name;
 	@Setter
 	private Long id;
-	private Map<String, List<String>> weekPrefers = new ConcurrentHashMap<>();
+	private Map<LocalDate, List<LocalDateTime>> weekPrefers = new ConcurrentHashMap<>();
+	private List<LocalDateTime> restrict = new ArrayList<>();
 	private Integer priorityByShiftsNumber = 0;
 	private Integer workingShiftsCounter = 0;
+	@Setter
+	private Long hoursPerShift;
 	
-	public void addPrefers(String dayName, List<String> shiftsNames) {
+	public void addPrefers(LocalDate dayName, List<LocalDateTime> shiftsNames) {
 		weekPrefers.put(dayName, shiftsNames);
 		priorityByShiftsNumber += shiftsNames.size();
 	}
 	
-	public void addToSchedule() {
+	public void addToSchedule(LocalDateTime shift) {
+		restrict.add(shift.plusHours(hoursPerShift));
 		++workingShiftsCounter;
 	}
 

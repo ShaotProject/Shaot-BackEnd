@@ -79,7 +79,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[\r\n    {\r\n        \"dayName\": \"sunday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"monday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"tuesday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"wednesday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"thursday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"friday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    },\r\n    {\r\n        \"dayName\": \"saturday\",\r\n        \"shifts\": [\"morning\", \"afternoon\"]\r\n    }\r\n]",
+					"raw": "[\r\n    {\r\n        \"dayName\": \"2023-08-07\",\r\n        \"shifts\": [\"2023-08-07T07:00:00\", \"2023-08-07T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-08\",\r\n        \"shifts\": [\"2023-08-08T07:00:00\", \"2023-08-08T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-09\",\r\n        \"shifts\": [\"2023-08-09T07:00:00\", \"2023-08-09T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-10\",\r\n        \"shifts\": [\"2023-08-10T07:00:00\", \"2023-08-10T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-11\",\r\n        \"shifts\": [\"2023-08-11T07:00:00\", \"2023-08-11T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-12\",\r\n        \"shifts\": [\"2023-08-12T07:00:00\", \"2023-08-12T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-13\",\r\n        \"shifts\": [\"2023-08-13T07:00:00\", \"2023-08-13T15:00:00\"]\r\n    }\r\n]",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -87,15 +87,15 @@
 					}
 				},
 				"url": {
-					"raw": "{{cloudUrll}}/worker/5000/prefers/1200",
+					"raw": "{{baseUrl}}/worker/5000/prefers/5000",
 					"host": [
-						"{{cloudUrll}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"worker",
 						"5000",
 						"prefers",
-						"1200"
+						"5000"
 					]
 				}
 			},
