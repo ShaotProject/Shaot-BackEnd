@@ -3,8 +3,12 @@ package com.shaot.schedule.generator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.zone.ZoneOffsetTransitionRule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,59 +45,40 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	public ScheduleGeneratorImpl() {
 		workerPrefers = new ConcurrentHashMap<>();
 		schedule = new TreeSet<>();
-		workingWeek = new UpdatableTreeSet<>();
-		workingWeekCopy = new UpdatableTreeSet<>();
+		workingWeek = new HashSet<>();
+		workingWeekCopy = new HashSet<>();
 	}
 
 	@Override
 	public Set<GeneratorShift> generateWeek(ScheduleConfigurationDto weekGenerator) {
 		workingWeek.clear();
 		schedule.clear();
-		LocalTime shiftStart = weekGenerator.getShiftsTime().get(0).getStart();
-		LocalTime shiftEnd = weekGenerator.getShiftsTime().get(0).getEnd();
-		hoursPerShift = ChronoUnit.HOURS.between(shiftStart, shiftEnd);
-		LocalDate weekTemp = weekGenerator.getWeekStart();
+		LocalDate weekPointer = weekGenerator.getWeekStart();
 		LocalDate weekEnd = weekGenerator.getWeekEnd();
-		while (!weekTemp.isEqual(weekEnd.plusDays(1))) {
-			List<ScheduleConfigurationShiftTime> shiftTimes = weekGenerator.getShiftsTime();
-			for (int i = 0; i < shiftTimes.size(); i++) {
-				LocalTime shiftStarts = shiftTimes.get(i).getStart();
-				LocalTime shiftEnds = shiftTimes.get(i).getEnd();
-				LocalDateTime shiftStartsName = shiftStarts.atDate(weekTemp);
-				LocalDateTime shiftEndsName = shiftEnds.isBefore(shiftStarts) ? shiftEnds.atDate(weekTemp.plusDays(1))
-						: shiftEnds.atDate(weekTemp);
-				String formattedDate = shiftStartsName.format(DateTimeFormatter.ISO_DATE_TIME);
-				GeneratorShift generatorShift = new GeneratorShift(formattedDate, weekTemp, shiftStartsName,
-						shiftEndsName);
+		List<ScheduleConfigurationShiftTime> time = weekGenerator.getShiftsTime();
+		while (weekPointer.isBefore(weekEnd)) {
+			for (int i = 0; i < time.size(); i++) {
+				LocalDateTime shiftName = time.get(i).getStart().atDate(weekPointer);
+				GeneratorShift generatorShift = new GeneratorShift(shiftName, weekPointer, time.get(i).getStart(),
+						time.get(i).getEnd());
 				generatorShift.setWorkerNeeded(weekGenerator.getWorkersNumberPerShift());
+				ShiftView shiftView = new ShiftView(shiftName, weekPointer, time.get(i).getStart(),
+						time.get(i).getEnd());
 				workingWeek.add(generatorShift);
-				schedule.add(new ShiftView(weekTemp, shiftTimes.get(i).getStart(), shiftTimes.get(i).getEnd()));
+				schedule.add(shiftView);
 			}
-			weekTemp = weekTemp.plusDays(1);
+			weekPointer = weekPointer.plusDays(1);
 		}
 		return workingWeek;
 	}
 
 	@Override
-	public void addPrefer(Long id, String workerName, WorkerPreferShiftsDto shift) {
-		GeneratorWorker generatorWorker = workerPrefers.get(id);
-		List<String> shifts = shift.getShifts();
-		if (generatorWorker == null) {
-			generatorWorker = new GeneratorWorker();
-		}
-		generatorWorker.addPrefers(shift.getDayName(), shifts);
-		generatorWorker.setName(workerName);
-		generatorWorker.setId(id);
-		generatorWorker.setHoursPerShift(hoursPerShift);
-		workerPrefers.put(id, generatorWorker);
-		addPreferToWorkingWeekAvailable(generatorWorker, shift.getDayName(), shifts);
-	}
-
-	private void addPreferToWorkingWeekAvailable(GeneratorWorker generatorWorker, String dayName, List<String> shifts) {
-		workingWeek.forEach(generatorShift -> {
-			shifts.forEach(shiftName -> {
-				LocalDateTime date = LocalDateTime.parse(shiftName);
-				shiftName = date.format(DateTimeFormatter.ISO_DATE_TIME);
+	public void addPrefer(Long id, String workerName, WorkerPreferShiftsDto shiftPrefers) {
+		GeneratorWorker generatorWorker = new GeneratorWorker(id, workerName);
+		LocalDate dayName = shiftPrefers.getDayName();
+		shiftPrefers.getShifts().forEach(time -> {
+			LocalDateTime shiftName = time.atDate(dayName);
+			workingWeek.forEach(generatorShift -> {
 				if (generatorShift.getShiftName().equals(shiftName)) {
 					generatorShift.addAvailable(generatorWorker);
 				}
@@ -102,36 +87,43 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	}
 
 	@Override
-	public List<WorkerPreferShiftsDto> getWorkerPrefers(Long id) {
-		List<WorkerPreferShiftsDto> list = new ArrayList<>();
-		GeneratorWorker generatorWorkerShift = workerPrefers.get(id);
-
-		generatorWorkerShift.getWeekPrefers().entrySet().forEach(entry -> {
-			WorkerPreferShiftsDto workerPreferShiftsDto = new WorkerPreferShiftsDto(entry.getKey(), entry.getValue());
-			list.add(workerPreferShiftsDto);
-		});
-
-		return list;
-	}
-
-	@Override
 	public Set<ShiftView> generateSchedule() {
-		if (workingWeek.size() <= 0) {
-			workingWeek = copyWeek(workingWeekCopy);
-		} else {
-			workingWeekCopy = copyWeek(workingWeek);
-		}
-		workingWeek.forEach(shift -> {
-			while (shift.getWorkerNeeded() > 0) {
-				if (saveWorker(shift)) {
-					shift.setWorkerNeeded(shift.getWorkerNeeded() - 1);
-				}
-				if (shift.getAvailable().size() <= 0) {
-					break;
+		List<GeneratorWorker> workers = new ArrayList<>();
+		List<ShiftView> shiftViews = new ArrayList<>();
+		workingWeek.forEach(generatorShift -> {
+			while (generatorShift.getWorkerNeeded() > 0 && generatorShift.getAvailable().size() > 0) {
+				GeneratorWorker worker = generatorShift.getCandidate();
+				if (worker != null) {
+					Long hoursPerShift = Long
+							.valueOf(generatorShift.getShiftEnd().getHour() - generatorShift.getShiftStart().getHour());
+					worker.setHoursPerShift(hoursPerShift);
+					if (workers.contains(worker)) {
+						int index = workers.indexOf(worker);
+						worker = workers.get(index);
+						workers.remove(index);
+					}
+					worker.addToSchedule(generatorShift.getShiftName());
+					workers.add(worker);
+
+					ShiftView shiftView = new ShiftView(generatorShift.getShiftName(), generatorShift.getDayName(),
+							generatorShift.getShiftStart(), generatorShift.getShiftEnd());
+					if (shiftViews.contains(shiftView)) {
+						int index = shiftViews.indexOf(shiftView);
+						shiftView = shiftViews.get(index);
+						shiftViews.remove(index);
+					}
+					if (!worker.getRestrict().contains(generatorShift.getShiftName())) {
+						shiftView.addWorkerName(worker.getName());
+						generatorShift.setWorkerNeeded(generatorShift.getWorkerNeeded() - 1);
+					}
+					generatorShift.removeAvailable(worker);
+					shiftViews.add(shiftView);
 				}
 			}
 		});
-		workingWeek.clear();
+
+		schedule.clear();
+		schedule.addAll(shiftViews);
 		return schedule;
 	}
 
@@ -147,21 +139,21 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 			return false;
 		}
 		saveWorkerPriority(worker, shift.getShiftName());
-		saveWorkerToSchedule(worker, shift.getShiftName(), shift.getDayName().toString());
+		saveWorkerToSchedule(worker, shift.getShiftName());
 		return true;
 	}
 
-	private void saveWorkerPriority(GeneratorWorker worker, String shiftName) {
+	private void saveWorkerPriority(GeneratorWorker worker, LocalDateTime shiftName) {
 		worker.addToSchedule(shiftName);
 		workingWeek.forEach(generatorShift -> {
-			if(generatorShift.getAvailable().contains(worker)) {
+			if (generatorShift.getAvailable().contains(worker)) {
 				generatorShift.removeAvailable(worker);
 				generatorShift.addAvailable(worker);
 			}
 		});
 	}
 
-	private void saveWorkerToSchedule(GeneratorWorker worker, String shiftName, String dayName) {
+	private void saveWorkerToSchedule(GeneratorWorker worker, LocalDateTime shiftName) {
 		if (worker != null) {
 			schedule.forEach(shiftView -> {
 				if (shiftName.equals(shiftView.getShiftName())) {
@@ -221,13 +213,8 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		List<WorkerShiftView> workerSchedule = new ArrayList<>();
 		schedule.stream().forEach(shiftView -> {
 			if (shiftView.getWorkerNames().contains(worker.getName())) {
-				workerSchedule.add(new WorkerShiftView(shiftView.getDayName().toString(), shiftView.getShiftName()));
+				workerSchedule.add(new WorkerShiftView(shiftView.getDayName(), shiftView.getShiftName()));
 			}
-//			day.stream().forEach(sv -> {
-//				if (sv.getWorkerNames().contains(worker.getName())) {
-//					workerSchedule.add(new WorkerShiftView(entry.getKey(), sv.getShiftName()));
-//				}
-//			});
 		});
 		return workerSchedule;
 	}

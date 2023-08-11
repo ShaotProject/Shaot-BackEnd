@@ -126,13 +126,12 @@ public class ShaotServiceImpl implements ShaotService {
 
 	@Override
 	@Transactional
-	public List<WorkerPreferShiftsDto> sendPrefers(List<WorkerPreferShiftsDto> workerPreferShiftsDtoList, long workerId, long companyId) {
+	public void sendPrefers(List<WorkerPreferShiftsDto> workerPreferShiftsDtoList, long workerId, long companyId) {
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		if(worker.getCompanies().contains(new CompanyForWorkerDto(companyId))) {
 			Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 			company.addWorkerPrefers(worker.getId(), workerPreferShiftsDtoList);
 			companiesRepository.save(company);
-			return company.getWorkerPrefers(worker.getId());
 		} else {
 			throw new AccessToCompanyRestrictedException(HttpStatus.FORBIDDEN);
 		}

@@ -130,8 +130,8 @@ public class ShaotController {
 	}
 	
 	@PutMapping("/shaot/worker/{workerId}/prefers/{companyId}")
-	public List<WorkerPreferShiftsDto> sendPreferedSchedule(@PathVariable long workerId, @PathVariable long companyId, @RequestBody List<WorkerPreferShiftsDto> prefers) {
-		return service.sendPrefers(prefers, workerId, companyId);
+	public void sendPreferedSchedule(@PathVariable long workerId, @PathVariable long companyId, @RequestBody List<WorkerPreferShiftsDto> prefers) {
+		service.sendPrefers(prefers, workerId, companyId);
 	}
 	
 	@GetMapping("/shaot/worker/{workerId}/company/{companyId}/schedule")

@@ -42,7 +42,7 @@ public interface ShaotService {
 	
 	WorkerView updateWorker(WorkerUpdateDto workerUpdateDto, long id);
 	
-	List<WorkerPreferShiftsDto> sendPrefers (List<WorkerPreferShiftsDto> workerPreferShiftsDto, long workerId, long companyId);
+	void sendPrefers (List<WorkerPreferShiftsDto> workerPreferShiftsDto, long workerId, long companyId);
 	
 	WorkerView addCompanyToWorker (long workerId, long companyId);
 	

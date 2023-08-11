@@ -23,8 +23,6 @@ public interface ScheduleGenerator {
 	
 	Set<GeneratorShift> generateWeek(ScheduleConfigurationDto weekGenerator);
 	
-	List<WorkerPreferShiftsDto> getWorkerPrefers(Long id);
-	
 	void addShift(CompanyAddShiftDto companyAddShiftDto);
 	
 	void addWorkingDay(CompanyAddWorkingDay companyAddWorkingDay);

@@ -13,6 +13,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkerShiftView {
-	private String dayName;
-	private String shiftName;
+	private LocalDate dayName;
+	private LocalDateTime shiftName;
 }

@@ -2,6 +2,7 @@ package com.shaot.schedule.generator;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,19 +19,21 @@ import lombok.Setter;
 
 @Getter
 public class GeneratorShift implements Comparable<GeneratorShift>{
-	private String shiftName;
-	private LocalDateTime shiftStart;
-	private LocalDateTime shiftEnd;
+	private LocalDateTime shiftName;
 	private LocalDate dayName;
 	private List<String> workersOnShift;
+	private LocalTime shiftStart;
+	private LocalTime shiftEnd;
 	@Setter
 	private int workerNeeded;
 	@Setter
 	private List<GeneratorWorker> available;
 	
-	public GeneratorShift(String shiftName, LocalDate dayName, LocalDateTime shiftStart, LocalDateTime shiftEnd) {
+	public GeneratorShift(LocalDateTime shiftName, LocalDate dayName, LocalTime shiftStart, LocalTime shiftEnd) {
 		this.shiftName = shiftName;
 		this.dayName = dayName;
+		this.shiftStart = shiftStart;
+		this.shiftEnd = shiftEnd;
 		this.available = new ArrayList<>();
 		this.workersOnShift = new ArrayList<>();
 	}
@@ -39,10 +42,7 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 		if(available.size() > 0 && workerNeeded > 0) {
 			Collections.sort(available);
 			GeneratorWorker worker = available.get(0);
-			if(!worker.getRestrict().contains(shiftName)) {
-				workersOnShift.add(worker.getName());
-				return worker;
-			}
+			return worker;
 		}
 		return null;
 	}
@@ -61,7 +61,6 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 	
 	@Override
 	public int compareTo(GeneratorShift o) {
-		return o.getShiftName().compareTo(shiftName);
-//		return Integer.valueOf(o.getAvailable().size()).compareTo(Integer.valueOf(available.size()));
+		return Integer.valueOf(o.getAvailable().size()).compareTo(Integer.valueOf(available.size()));
 	}
 }

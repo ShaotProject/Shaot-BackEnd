@@ -42,12 +42,9 @@ public class Company {
 	public void addWorkerPrefers(Long workerId, List<WorkerPreferShiftsDto> workerPreferShiftsDtoList) {
 		WorkerForCompanyDto worker = workersMap.get(workerId);
 		if(worker != null) {
+			System.out.println(workerPreferShiftsDtoList.size());
 			workerPreferShiftsDtoList.forEach(prefer -> generator.addPrefer(worker.getId(), worker.getName(), prefer));
 		}
-	}
-	
-	public List<WorkerPreferShiftsDto> getWorkerPrefers(Long workerId) {
-		return generator.getWorkerPrefers(workerId);
 	}
 	
 	public void removeWorker(long workerId) {

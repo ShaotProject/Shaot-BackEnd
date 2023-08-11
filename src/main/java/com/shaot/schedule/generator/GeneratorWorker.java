@@ -22,28 +22,31 @@ public class GeneratorWorker implements Comparable<GeneratorWorker> {
 	@Setter
 	private Long id;
 	private Map<String, List<String>> weekPrefers = new ConcurrentHashMap<>();
-	private List<String> restrict = new ArrayList<>();
+	private List<LocalDateTime> restrict = new ArrayList<>();
 	private Integer priorityByShiftsNumber = 0;
 	private Integer workingShiftsCounter = 0;
 	@Setter
 	private Long hoursPerShift;
+	
+	public GeneratorWorker(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 	
 	public void addPrefers(String dayName, List<String> shiftsNames) {
 		weekPrefers.put(dayName, shiftsNames);
 		priorityByShiftsNumber += shiftsNames.size();
 	}
 	
-	public void addToSchedule(String shift) {
-		LocalDateTime shiftTime = LocalDateTime.parse(shift);
-		if(restrict.contains(shiftTime.format(DateTimeFormatter.ISO_DATE_TIME))) {
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			return;
+	public void addToSchedule(LocalDateTime shift) {
+		if(!restrict.contains(shift) ) {
+			LocalDateTime hoursPlus = shift.plusHours(hoursPerShift);
+			LocalDateTime hoursMinus = shift.minusHours(hoursPerShift);
+			restrict.add(hoursPlus);
+			restrict.add(hoursPlus.plusHours(hoursPerShift * 2));
+			restrict.add(hoursMinus);
+			++workingShiftsCounter;
 		}
-		LocalDateTime hoursPlus = shiftTime.plusHours(hoursPerShift);
-		LocalDateTime hoursMinus = shiftTime.minusHours(hoursPerShift);
-		restrict.add(hoursPlus.format(DateTimeFormatter.ISO_DATE_TIME));
-		restrict.add(hoursMinus.format(DateTimeFormatter.ISO_DATE_TIME));
-		++workingShiftsCounter;
 	}
 
 	@Override
