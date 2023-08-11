@@ -190,7 +190,7 @@ public class ShaotController {
 	}
 	
 	@GetMapping("shaot/company/{id}/schedule")
-	public Map<LocalDate, List<ShiftView>>  generateSchedule(@PathVariable long id) {
+	public Set<ShiftView>  generateSchedule(@PathVariable long id) {
 		return service.generateSchedule(id);
 	}
 	
@@ -210,7 +210,7 @@ public class ShaotController {
 	}
 	
 	@PutMapping("shaot/company/{id}/schedule/configure")
-	public Map<LocalDate, List<ShiftView>> configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
+	public Set<ShiftView> configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
 		return service.configurateSchedule(id, configuration);
 	}
 	

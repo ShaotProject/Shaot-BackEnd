@@ -1,7 +1,6 @@
 package com.shaot.service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,7 +8,7 @@ import java.util.Set;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shaot.dto.company.CompanyAddShiftDto;
 import com.shaot.dto.company.CompanyAddWorkingDay;
@@ -21,7 +20,6 @@ import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
-import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
@@ -38,7 +36,6 @@ import com.shaot.model.Company;
 import com.shaot.model.Worker;
 import com.shaot.repository.CompaniesRepository;
 import com.shaot.repository.WorkersRepository;
-import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
 
 import lombok.RequiredArgsConstructor;
@@ -62,6 +59,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 	
 	@Override
+	@Transactional
 	public WorkerView deleteWorkerFromDataBase(long workerId) {
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		workersRepository.delete(worker);
@@ -74,6 +72,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
+	@Transactional
 	public CompanyView deleteCompanyFromDataBase(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		companiesRepository.delete(company);
@@ -86,6 +85,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 	
 	@Override
+	@Transactional
 	public WorkerView addWorker(WorkerDto workerDto) {
 		if(!workersRepository.existsById(workerDto.getId())) {
 			Worker worker = workersRepository.save(modelMapper.map(workerDto, Worker.class));
@@ -95,6 +95,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
+	@Transactional
 	public WorkerView updateWorker(WorkerUpdateDto workerUpdateDto, long id) {
 		Worker worker = workersRepository.findWorkerById(id).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		worker.setName(workerUpdateDto.getName());
@@ -108,6 +109,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
+	@Transactional
 	public WorkerView addCompanyToWorker(long workerId, long companyId) {
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
@@ -123,6 +125,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
+	@Transactional
 	public List<WorkerPreferShiftsDto> sendPrefers(List<WorkerPreferShiftsDto> workerPreferShiftsDtoList, long workerId, long companyId) {
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		if(worker.getCompanies().contains(new CompanyForWorkerDto(companyId))) {
@@ -153,6 +156,7 @@ public class ShaotServiceImpl implements ShaotService {
 	
 	
 	@Override
+	@Transactional
 	public CompanyView addCompanyToRepository(CompanyDto companyDto) {
 		if(!companiesRepository.existsById(companyDto.getId())) {
 			Company company = new Company(companyDto.getId(), companyDto.getName(), companyDto.getPassword(), companyDto.getGeneralWage());
@@ -169,6 +173,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 	
 	@Override
+	@Transactional
 	public CompanyView addWorkerToCompany(long companyId, long workerId) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));	
@@ -183,6 +188,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
+	@Transactional
 	public CompanyView updateCompany(CompanyUpdateDto companyUpdateDto, long id) {
 		Company company = companiesRepository.findCompanyById(id).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.setName(companyUpdateDto.getName());
@@ -196,6 +202,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
+	@Transactional
 	public CompanyView removeWorkerFromCompany(long companyId, long workerId) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
@@ -207,11 +214,11 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Map<LocalDate, List<ShiftView>> generateSchedule(long companyId) {
+	public Set<ShiftView> generateSchedule(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Map<LocalDate, List<ShiftView>> schedule = company.getGenerator().generateSchedule();
+		company.getGenerator().generateSchedule();
 		companiesRepository.save(company);
-		return schedule;
+		return company.getGenerator().getSchedule();
 	}
 
 	@Override
@@ -247,22 +254,24 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Map<LocalDate, List<ShiftView>> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto) {
+	public Set<ShiftView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Map<LocalDate, List<GeneratorShift>> workingWeek = company.getGenerator().generateWeek(companyWeekGeneratorDto);
+		company.getGenerator().generateWeek(companyWeekGeneratorDto);
 		companiesRepository.save(company);
 		return company.getGenerator().getSchedule();
 	}
 
 	@Override
-	public Map<LocalDate, List<ShiftView>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
+	@Transactional
+	public Set<ShiftView> configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Map<LocalDate, List<GeneratorShift>> workingWeek = company.getGenerator().generateWeek(configuration);
+		company.getGenerator().generateWeek(configuration);
 		companiesRepository.save(company);
 		return company.getGenerator().getSchedule();
 	}
 
 	@Override
+	@Transactional
 	public WorkerForCompanyView setIndividualWage(long companyId, long workerId, CompanyWageDto companyWageDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		Worker worker = workersRepository.findWorkerById(workerId).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
@@ -275,6 +284,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
+	@Transactional
 	public List<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.setGeneralWage(companyWageDto.getNewWage());

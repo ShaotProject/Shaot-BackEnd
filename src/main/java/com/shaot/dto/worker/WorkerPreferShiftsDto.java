@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkerPreferShiftsDto {
-	private LocalDate dayName;
+	private String dayName;
 	//List of Strings or List of objects?
-	private List<LocalDateTime> shifts;
+	private List<String> shifts;
 }

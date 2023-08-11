@@ -3,6 +3,7 @@ package com.shaot.schedule.generator;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.shaot.dto.company.CompanyAddShiftDto;
 import com.shaot.dto.company.CompanyAddWorkingDay;
@@ -18,9 +19,9 @@ public interface ScheduleGenerator {
 	
 	void addPrefer(Long id, String workerName, WorkerPreferShiftsDto shift);
 	
-	Map<LocalDate, List<ShiftView>> generateSchedule();
+	Set<ShiftView> generateSchedule();
 	
-	Map<LocalDate, List<GeneratorShift>> generateWeek(ScheduleConfigurationDto weekGenerator);
+	Set<GeneratorShift> generateWeek(ScheduleConfigurationDto weekGenerator);
 	
 	List<WorkerPreferShiftsDto> getWorkerPrefers(Long id);
 	

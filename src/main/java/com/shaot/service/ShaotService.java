@@ -64,7 +64,7 @@ public interface ShaotService {
 	
 	List<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto);
 
-	Map<LocalDate, List<ShiftView>> generateSchedule(long companyId);
+	Set<ShiftView> generateSchedule(long companyId);
 
 	Set<CompanyShiftDto> addShift(long companyId, CompanyAddShiftDto companyShiftAddShiftDto);
 
@@ -74,9 +74,9 @@ public interface ShaotService {
 
 	Set<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto);
 	
-	Map<LocalDate, List<ShiftView>> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto);
+	Set<ShiftView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto);
 	
-	Map<LocalDate, List<ShiftView>> configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
+	Set<ShiftView> configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
 	
 	
 }
