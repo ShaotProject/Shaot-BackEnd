@@ -38,6 +38,7 @@ C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerDayDto.
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\controller\ShaotController.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\AcessToWorkerRestrictedException.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\UpdatableTreeSet.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerForCompanyView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\Shaot3Application.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\model\Company.java
