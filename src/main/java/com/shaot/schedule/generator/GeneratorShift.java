@@ -28,6 +28,7 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 	private int workerNeeded;
 	@Setter
 	private List<GeneratorWorker> available;
+	private int hoursPerShift;
 	
 	public GeneratorShift(LocalDateTime shiftName, LocalDate dayName, LocalTime shiftStart, LocalTime shiftEnd) {
 		this.shiftName = shiftName;
@@ -36,22 +37,41 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 		this.shiftEnd = shiftEnd;
 		this.available = new ArrayList<>();
 		this.workersOnShift = new ArrayList<>();
+		this.hoursPerShift = countHoursPerShift();
 	}
 	
-	public GeneratorWorker getCandidate() {
-		if(available.size() > 0 && workerNeeded > 0) {
-			Collections.sort(available);
-			GeneratorWorker worker = available.get(0);
-			return worker;
+	public int countHoursPerShift() {
+		int res = 0;
+		LocalTime temp = shiftStart;
+		if(temp.getHour() == LocalTime.MAX.getHour()) {
+			++res;
+			temp = LocalTime.MIN;
 		}
-		return null;
+		while(temp.isBefore(shiftEnd)) {
+			temp = temp.plusHours(1);
+			++res;
+		}
+		return res;
+	}
+
+	public boolean updateAvailable(GeneratorWorker worker, LocalTime shiftEnd, LocalDateTime restrict) {
+		if (available.contains(worker)) {
+			for (int i = 0; i < available.size(); i++) {
+				if (available.get(i).equals(worker)) {
+					available.get(i).addToSchedule(restrict, shiftEnd, hoursPerShift);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	public boolean addAvailable(GeneratorWorker worker) {
 		return available.add(worker);
 	}
 	
-	public boolean removeAvailable(GeneratorWorker worker) {
+	public boolean removeAvailable() {
+		GeneratorWorker worker = Collections.min(available);
 		return available.remove(worker);
 	}
 	
@@ -61,6 +81,7 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 	
 	@Override
 	public int compareTo(GeneratorShift o) {
-		return Integer.valueOf(o.getAvailable().size()).compareTo(Integer.valueOf(available.size()));
+		Integer res = Integer.valueOf(o.getAvailable().size()).compareTo(Integer.valueOf(available.size()));
+		return res == 0 ? Integer.valueOf(o.getShiftName().compareTo(shiftName)) : res;
 	}
 }

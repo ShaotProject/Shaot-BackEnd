@@ -17,7 +17,7 @@ import com.shaot.model.Worker;
 
 public interface ScheduleGenerator {
 	
-	void addPrefer(Long id, String workerName, WorkerPreferShiftsDto shift);
+	void addPrefer(Long id, String workerName, WorkerPreferShiftsDto shift, int priority);
 	
 	Set<ShiftView> generateSchedule();
 	

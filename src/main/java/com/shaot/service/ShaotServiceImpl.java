@@ -215,9 +215,7 @@ public class ShaotServiceImpl implements ShaotService {
 	@Override
 	public Set<ShiftView> generateSchedule(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		company.getGenerator().generateSchedule();
-		companiesRepository.save(company);
-		return company.getGenerator().getSchedule();
+		return company.getGenerator().generateSchedule();
 	}
 
 	@Override
