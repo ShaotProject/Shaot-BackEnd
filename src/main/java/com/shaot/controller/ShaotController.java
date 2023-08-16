@@ -31,6 +31,8 @@ import com.shaot.dto.company.CompanyWageDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.company.ScheduleConfigurationShiftTime;
+import com.shaot.dto.company.SendMessageDto;
+import com.shaot.dto.worker.MessageAnswerDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerForCompanyView;
@@ -44,6 +46,8 @@ import com.shaot.exceptions.CompanyAlreadyExistsException;
 import com.shaot.exceptions.CompanyNotFoundException;
 import com.shaot.exceptions.ResponseExceptionDto;
 import com.shaot.exceptions.WorkerNotFoundException;
+import com.shaot.model.CompanyMessage;
+import com.shaot.model.WorkerMessage;
 import com.shaot.schedule.generator.ShiftView;
 import com.shaot.service.ShaotService;
 
@@ -139,6 +143,21 @@ public class ShaotController {
 		return service.getWeeklySchedule(companyId, workerId);
 	}
 	
+	@GetMapping("shaot/worker/{workerId}/messages")
+	public List<WorkerMessage> getWorkerMessages(@PathVariable long workerId) {
+		return service.getWorkerMessages(workerId);
+	}
+	
+	@GetMapping("shaot/worker/{workerId}/message/{messageId}")
+	public WorkerMessage getWorkerMessageById(@PathVariable long workerId, @PathVariable long messageId) {
+		return service.getWorkerMessageById(workerId, messageId);
+	}
+	
+	@PutMapping("shaot/worker/{workerId}/answer/{messageId}")
+	public WorkerMessage answerMessage(@PathVariable long workerId, @PathVariable long messageId, @RequestBody MessageAnswerDto messageAnswerDto) {
+		return service.answerMessage(workerId, messageId, messageAnswerDto);
+	}
+	
 		
 	////////////////////////////////
 	////////////Company/////////////
@@ -222,6 +241,26 @@ public class ShaotController {
 	@PutMapping("shaot/company/{companyId}/wage/worker/{workerId}")
 	public WorkerForCompanyView setIndividualWage(@PathVariable long companyId, @PathVariable long workerId, @RequestBody CompanyWageDto companyWageDto) {
 		return service.setIndividualWage(companyId, workerId, companyWageDto);
+	}
+	
+	@PostMapping("shaot/company/{companyId}/worker/{workerId}/message")
+	public WorkerMessage sendMessage(@PathVariable long companyId, @PathVariable long workerId, @RequestBody SendMessageDto message) {
+		return service.sendMessage(companyId, workerId, message);
+	}
+	
+	@GetMapping("shaot/company/{companyId}/messages")
+	public List<CompanyMessage> getCompanyMessages(@PathVariable long companyId) {
+		return service.getAllCompanyMessages(companyId);
+	}
+	
+	@GetMapping("shaot/company/{companyId}/message/{messageId}")
+	public CompanyMessage getCompanyMessageById(@PathVariable long companyId, @PathVariable long messageId) {
+		return service.getCompanyMessageById(companyId, messageId);
+	}
+	
+	@GetMapping("shaot/company/{companyId}/worker/{workerId}/messages")
+	public List<CompanyMessage> getAllCompanyMessagesByWorkerId(@PathVariable long companyId, @PathVariable long workerId) {
+		return service.getCompanyMessageByWorkerId(companyId, workerId);
 	}
 	
 	

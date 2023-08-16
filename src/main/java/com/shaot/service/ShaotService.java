@@ -16,6 +16,8 @@ import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
+import com.shaot.dto.company.SendMessageDto;
+import com.shaot.dto.worker.MessageAnswerDto;
 import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerForCompanyView;
@@ -23,7 +25,9 @@ import com.shaot.dto.worker.WorkerPreferShiftsDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.dto.worker.WorkerView;
+import com.shaot.model.CompanyMessage;
 import com.shaot.model.Worker;
+import com.shaot.model.WorkerMessage;
 import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
 
@@ -47,6 +51,12 @@ public interface ShaotService {
 	WorkerView addCompanyToWorker (long workerId, long companyId);
 	
 	List<WorkerShiftView> getWeeklySchedule(long companyId, long workerId);
+	
+	List<WorkerMessage> getWorkerMessages(Long workerId);
+	
+	WorkerMessage getWorkerMessageById(Long workerId, Long messageId);
+	
+	WorkerMessage answerMessage(Long workerId, Long messageId, MessageAnswerDto messageAnswerDto);
 	
 	
 	//Company
@@ -78,5 +88,11 @@ public interface ShaotService {
 	
 	Set<ShiftView> configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
 	
+	WorkerMessage sendMessage(Long companyId, Long workerId, SendMessageDto message);
 	
+	List<CompanyMessage> getAllCompanyMessages(Long companyId);
+	
+	CompanyMessage getCompanyMessageById(Long companyId, Long messageId);
+	
+	List<CompanyMessage> getCompanyMessageByWorkerId(Long companyId, Long workerId);
 }

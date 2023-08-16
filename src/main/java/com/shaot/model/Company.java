@@ -1,6 +1,5 @@
 package com.shaot.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ public class Company {
 	private Set<WorkerForCompanyDto> workers = new HashSet<>();
 	private Map<Long, WorkerForCompanyDto> workersMap = new ConcurrentHashMap<>();
 	private Set<CompanyShiftDto> shifts = new HashSet<>();
+	private Map<Long, CompanyMessage> messages = new ConcurrentHashMap<>();
 	private ScheduleGeneratorImpl generator = new ScheduleGeneratorImpl();
 	
 	public Company(long id, String name, String password, double generalWage) {
@@ -99,14 +99,18 @@ public class Company {
 			if(!w.isIndividualWage()) {
 				w.setWage(newWage);
 			}
-		});
-		
+		});	
 	}
 	
+	public CompanyMessage addMessage(Long workerId, Long messageId, String reason, boolean answer) {
+		return messages.put(messageId, new CompanyMessage(workerId, reason, answer));
+	}
 	
+	public CompanyMessage getMessageById(Long messageId) {
+		return messages.get(messageId);
+	}
 	
-	
-	
-	
-	
+	public List<CompanyMessage> getAllMessagesByWorkerId(Long workerId) {
+		return messages.values().stream().filter(m -> m.getWorkerId().equals(workerId)).toList();
+	}	
 }
