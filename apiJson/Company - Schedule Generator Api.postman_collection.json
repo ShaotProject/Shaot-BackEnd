@@ -222,6 +222,73 @@
 				"header": []
 			},
 			"response": []
+		},
+		{
+			"name": "Send message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"messageId\": 1000,\r\n    \"shiftNeed\": \"2023-08-13T07:00:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/company/1700/worker/1/message",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company",
+						"1700",
+						"worker",
+						"1",
+						"message"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Messages",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get Message by Message ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get messages by worker Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/company/1700/worker/1/messages",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"company",
+						"1700",
+						"worker",
+						"1",
+						"messages"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [

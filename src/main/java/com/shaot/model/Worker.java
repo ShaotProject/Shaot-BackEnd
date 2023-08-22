@@ -1,5 +1,6 @@
 package com.shaot.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Worker {
 	private double wage;
 	@Setter
 	private boolean individualWage;
-	private List<CompanyForWorkerDto> companies = new ArrayList<>();
+	private CompanyForWorkerDto company;
 	private List<WorkerScheduleDto> shifts = new ArrayList<>();
 	private Map<Long, WorkerMessage> messages = new ConcurrentHashMap<>();
 	
@@ -36,16 +37,14 @@ public class Worker {
 		this.password = password;
 	}
 	
-	public boolean addCompany(CompanyForWorkerDto company) {
-		if(!companies.contains(company)) {
-			return companies.add(company);
-		}
-		return false;
+	public void addCompany(CompanyForWorkerDto company) {
+		this.company = company;
+		
 	}
 	
 	public void removeCompany(CompanyForWorkerDto company) {
-		if(companies.contains(company)) {
-			companies.remove(company);
+		if(this.company.equals(company)) {
+			this.company = null;
 		}
 	}
 	
@@ -60,8 +59,8 @@ public class Worker {
 		return messages.get(messageId);
 	}
 	
-	public void addMessage(Long messageId, Long senderId, String text) {
-		messages.put(messageId, new WorkerMessage(text, senderId));
+	public void addMessage(Long messageId, Long senderId, String text, LocalDateTime shiftName) {
+		messages.put(messageId, new WorkerMessage(text, senderId, shiftName));
 	}
 	
 	public WorkerMessage answerMessage(Long messageId, boolean answer, String reason) {
@@ -72,11 +71,7 @@ public class Worker {
 	}
 	
 	public CompanyForWorkerDto updateCompany(long companyId, String newName) {
-		List<CompanyForWorkerDto> companyList = companies.stream().filter(c -> c.getId() == companyId).toList();
-		CompanyForWorkerDto company = companyList.get(0);
-		removeCompany(company);
-		company.setName(newName);
-		addCompany(company);
+		this.company.setName(newName);
 		return company;
 	}
 }

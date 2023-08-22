@@ -13,6 +13,6 @@ public class WorkerView {
 	private long id;
 	private String name;
 	private double wage;
-	private List<CompanyForWorkerDto> companies;
+	private CompanyForWorkerDto company;
 	private List<WorkerScheduleDto> shifts;
 }

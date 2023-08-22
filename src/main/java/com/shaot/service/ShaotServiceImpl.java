@@ -70,12 +70,10 @@ public class ShaotServiceImpl implements ShaotService {
 		Worker worker = workersRepository.findWorkerById(workerId)
 				.orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		workersRepository.delete(worker);
-		worker.getCompanies().forEach(c -> {
-			Company company = companiesRepository.findCompanyById(c.getId())
-					.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-			company.removeWorker(worker.getId());
-			companiesRepository.save(company);
-		});
+		long companyId = worker.getCompany().getId();
+		Company company = companiesRepository.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
+		company.removeWorker(workerId);
+		companiesRepository.save(company);
 		return modelMapper.map(worker, WorkerView.class);
 	}
 
@@ -111,12 +109,10 @@ public class ShaotServiceImpl implements ShaotService {
 				.orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		worker.setName(workerUpdateDto.getName());
 		workersRepository.save(worker);
-		worker.getCompanies().forEach(c -> {
-			Company company = companiesRepository.findCompanyById(c.getId())
-					.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-			company.updateWorker(worker.getId(), worker.getName());
-			companiesRepository.save(company);
-		});
+		long companyId = worker.getCompany().getId();
+		Company company = companiesRepository.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
+		company.updateWorker(id, workerUpdateDto.getName());
+		companiesRepository.save(company);
 		return modelMapper.map(worker, WorkerView.class);
 	}
 
@@ -144,7 +140,7 @@ public class ShaotServiceImpl implements ShaotService {
 	public void sendPrefers(List<WorkerPreferShiftsDto> workerPreferShiftsDtoList, long workerId, long companyId) {
 		Worker worker = workersRepository.findWorkerById(workerId)
 				.orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
-		if (worker.getCompanies().contains(new CompanyForWorkerDto(companyId))) {
+		if (worker.getCompany().equals(new CompanyForWorkerDto(companyId))) {
 			Company company = companiesRepository.findCompanyById(companyId)
 					.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 			company.addWorkerPrefers(worker.getId(), workerPreferShiftsDtoList);
@@ -160,7 +156,7 @@ public class ShaotServiceImpl implements ShaotService {
 				.orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		if (worker.getCompanies().contains(new CompanyForWorkerDto(companyId))) {
+		if (worker.getCompany().equals(new CompanyForWorkerDto(companyId))) {
 			List<WorkerShiftView> workerSchedule = company.getGenerator().getWorkerSchedule(worker);
 			return workerSchedule;
 		} else {
@@ -188,10 +184,14 @@ public class ShaotServiceImpl implements ShaotService {
 		Worker worker = workersRepository.findWorkerById(workerId)
 				.orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		worker.answerMessage(messageId, messageAnswerDto.isAnswer(), messageAnswerDto.getReason());
-		Long companyId = worker.getMessageById(messageId).getSenderId();
+		WorkerMessage message = worker.getMessageById(messageId);
+		Long companyId = message.getSenderId();
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.addMessage(workerId, messageId, messageAnswerDto.getReason(), messageAnswerDto.isAnswer());
+		if(messageAnswerDto.isAnswer()) {
+			company.setWorkerOnShiftManual(workerId, worker.getName(), message.getShiftName());
+		}
 		companiesRepository.save(company);
 		workersRepository.save(worker);
 		return worker.getMessageById(messageId);
@@ -228,7 +228,7 @@ public class ShaotServiceImpl implements ShaotService {
 		Worker worker = workersRepository.findWorkerById(workerId)
 				.orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 		company.addWorker(new WorkerForCompanyDto(workerId, worker.getName()));
-		if (!worker.getCompanies().contains(new CompanyForWorkerDto(company.getId()))) {
+		if (worker.getCompany() == null) {
 			worker.addCompany(modelMapper.map(company, CompanyForWorkerDto.class));
 			worker.setWage(company.getGeneralWage());
 		}
@@ -372,7 +372,7 @@ public class ShaotServiceImpl implements ShaotService {
 		LocalDateTime shiftName = sendMessageDto.getShiftNeed();
 		DateTimeFormatter shiftFormat = DateTimeFormatter.ofPattern("dd.MM HH:mm");
 		String messageText = "Need worker on shift " + shiftName.format(shiftFormat);
-		worker.addMessage(sendMessageDto.getMessageId(), company.getId(), messageText);
+		worker.addMessage(sendMessageDto.getMessageId(), company.getId(), messageText, shiftName);
 		workersRepository.save(worker);
 		return worker.getMessageById(sendMessageDto.getMessageId());
 	}

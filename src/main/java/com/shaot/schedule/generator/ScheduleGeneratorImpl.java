@@ -93,7 +93,6 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	public Set<ShiftView> generateSchedule() {
 		List<ShiftView> shiftViews = new ArrayList<>();
 		List<GeneratorShift> allShifts = copyWeek(workingWeek);
-		Collections.sort(allShifts);
 
 		allShifts.forEach(generatorShift -> {
 			while(generatorShift.getAvailable().size() > 0 && generatorShift.getWorkerNeeded() > 0) {
@@ -155,17 +154,31 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	}
 
 	@Override
-	public void addShift(CompanyAddShiftDto companyAddShiftDto) {
-		// TODO
-	}
-
-	@Override
 	public void addWorkingDay(CompanyAddWorkingDay companyAddWorkingDayDto) {
 		CompanyWorkingDayDto workingDay = new CompanyWorkingDayDto(companyAddWorkingDayDto.getDayName(),
 				companyAddWorkingDayDto.getWorkersQuantityPerShift());
 		companyAddWorkingDayDto.getShifts()
 				.forEach(s -> workingDay.addShift(new CompanyShiftDto(companyAddWorkingDayDto.getDayName(), s,
 						new ArrayList<>(companyAddWorkingDayDto.getWorkersQuantityPerShift()))));
+	}
+	
+	@Override
+	public List<WorkerShiftView> getWorkerSchedule(Worker worker) {
+		List<WorkerShiftView> workerSchedule = new ArrayList<>();
+		schedule.stream().forEach(shiftView -> {
+			if (shiftView.getWorkerNames().contains(worker.getName())) {
+				workerSchedule.add(new WorkerShiftView(shiftView.getDayName(), shiftView.getShiftName()));
+			}
+		});
+		return workerSchedule;
+	}
+	
+	public void setWorkerOnShiftManual(Long workerId, String workerName, LocalDateTime shiftName) {
+		schedule.forEach(generatorShift -> {
+			if(generatorShift.getShiftName().equals(shiftName)) {
+				generatorShift.addWorkerName(workerName);
+			}
+		});
 	}
 
 	@Override
@@ -179,15 +192,9 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		// workingWeek.stream().filter(day ->
 		// !day.getDayName().equals(companyRemoveWorkingDayDto.getDayName()));
 	}
-
+	
 	@Override
-	public List<WorkerShiftView> getWorkerSchedule(Worker worker) {
-		List<WorkerShiftView> workerSchedule = new ArrayList<>();
-		schedule.stream().forEach(shiftView -> {
-			if (shiftView.getWorkerNames().contains(worker.getName())) {
-				workerSchedule.add(new WorkerShiftView(shiftView.getDayName(), shiftView.getShiftName()));
-			}
-		});
-		return workerSchedule;
+	public void addShift(CompanyAddShiftDto companyAddShiftDto) {
+		// TODO
 	}
 }

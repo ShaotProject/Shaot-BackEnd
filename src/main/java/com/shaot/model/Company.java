@@ -1,5 +1,6 @@
 package com.shaot.model;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,10 @@ public class Company {
 				w.setWage(newWage);
 			}
 		});	
+	}
+	
+	public void setWorkerOnShiftManual(Long workerId, String workerName, LocalDateTime shiftName) {
+		generator.setWorkerOnShiftManual(workerId, workerName, shiftName);
 	}
 	
 	public CompanyMessage addMessage(Long workerId, Long messageId, String reason, boolean answer) {
