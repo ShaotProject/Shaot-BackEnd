@@ -3,10 +3,12 @@ package com.shaot.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -96,10 +98,13 @@ public class ShaotServiceImpl implements ShaotService {
 	@Transactional
 	public WorkerView addWorker(WorkerDto workerDto) {
 		if (!workersRepository.existsById(workerDto.getId())) {
-			Worker worker = workersRepository.save(modelMapper.map(workerDto, Worker.class));
+			Worker worker = modelMapper.map(workerDto, Worker.class);
+			String password = BCrypt.hashpw(workerDto.getPassword(), BCrypt.gensalt());
+			worker.setPassword(password);
+			workersRepository.save(worker);
 			return modelMapper.map(worker, WorkerView.class);
 		}
-		throw new WorkerNotFoundException(HttpStatus.NOT_FOUND);
+		throw new WorkerNotFoundException(HttpStatus.NOT_FOUND); //worker is already exists exception !!!
 	}
 
 	@Override
@@ -205,8 +210,9 @@ public class ShaotServiceImpl implements ShaotService {
 	@Transactional
 	public CompanyView addCompanyToRepository(CompanyDto companyDto) {
 		if (!companiesRepository.existsById(companyDto.getId())) {
-			Company company = new Company(companyDto.getId(), companyDto.getName(), companyDto.getPassword(),
-					companyDto.getGeneralWage());
+			Company company = modelMapper.map(companyDto, Company.class);
+			String password = BCrypt.hashpw(companyDto.getPassword(), BCrypt.gensalt());
+			company.setPassword(password);
 			companiesRepository.save(company);
 			return modelMapper.map(company, CompanyView.class);
 		}

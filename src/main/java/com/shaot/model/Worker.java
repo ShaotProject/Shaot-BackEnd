@@ -11,16 +11,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.shaot.dto.company.CompanyForWorkerDto;
 import com.shaot.dto.worker.WorkerScheduleDto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode(of="mail")
 public class Worker {
 	private long id;
 	@Setter
 	private String name;
+	@Setter
+	private String mail;
 	@Setter
 	private String password;
 	@Setter
@@ -31,9 +35,10 @@ public class Worker {
 	private List<WorkerScheduleDto> shifts = new ArrayList<>();
 	private Map<Long, WorkerMessage> messages = new ConcurrentHashMap<>();
 	
-	public Worker(long id, String name, String password) {
+	public Worker(long id, String name, String mail, String password) {
 		this.id = id;
 		this.name = name;
+		this.mail = mail;
 		this.password = password;
 	}
 	

@@ -8,5 +8,6 @@ import lombok.NoArgsConstructor;
 public class WorkerDto {
 	private long id;
 	private String name;
+	private String mail;
 	private String password;
 }

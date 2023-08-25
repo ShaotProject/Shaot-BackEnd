@@ -19,11 +19,13 @@ import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
-@EqualsAndHashCode(of="id")
+@EqualsAndHashCode(of="mail")
 public class Company {
 	private long id;
 	@Setter
 	private String name;
+	@Setter
+	private String mail;
 	@Setter
 	private String password;
 	private double generalWage;
@@ -33,9 +35,10 @@ public class Company {
 	private Map<Long, CompanyMessage> messages = new ConcurrentHashMap<>();
 	private ScheduleGeneratorImpl generator = new ScheduleGeneratorImpl();
 	
-	public Company(long id, String name, String password, double generalWage) {
+	public Company(long id, String name, String mail, String password, double generalWage) {
 		this.id = id;
 		this.name = name;
+		this.mail = mail;
 		this.password = password;
 		this.generalWage = generalWage;
 	}

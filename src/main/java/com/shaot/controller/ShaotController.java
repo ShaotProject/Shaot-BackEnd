@@ -45,6 +45,7 @@ import com.shaot.exceptions.AcessToWorkerRestrictedException;
 import com.shaot.exceptions.CompanyAlreadyExistsException;
 import com.shaot.exceptions.CompanyNotFoundException;
 import com.shaot.exceptions.ResponseExceptionDto;
+import com.shaot.exceptions.UserNotFoundException;
 import com.shaot.exceptions.WorkerNotFoundException;
 import com.shaot.model.CompanyMessage;
 import com.shaot.model.WorkerMessage;
@@ -57,6 +58,11 @@ public class ShaotController {
 	
 	@Autowired
 	ShaotService service;
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseExceptionDto handleUserNotFoundException() {
+		return new ResponseExceptionDto(404, "User not found");
+	}
 	
 	@ExceptionHandler(CompanyAlreadyExistsException.class)
 	public ResponseExceptionDto handleCompanyExistsException() {
