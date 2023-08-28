@@ -12,13 +12,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrl}}/worker/5000",
+					"raw": "{{cloudUrl}}/worker/{{workerId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"worker",
-						"5000"
+						"{{workerId}}"
 					]
 				}
 			},
@@ -53,7 +53,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 6000,\r\n    \"name\": \"John Smith\",\r\n    \"password\": \"1234\"\r\n}",
+					"raw": "{\r\n    \"id\": 13,\r\n    \"mail\": \"oded@gmail.com\",\r\n    \"name\": \"Oded\",\r\n    \"password\": \"1234\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -75,11 +75,26 @@
 		{
 			"name": "Add prefered shifts to Data Base",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "oded@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[\r\n    {\r\n        \"dayName\": \"2023-08-07\",\r\n        \"shifts\": [\"2023-08-07T07:00:00\", \"2023-08-07T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-08\",\r\n        \"shifts\": [\"2023-08-08T07:00:00\", \"2023-08-08T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-09\",\r\n        \"shifts\": [\"2023-08-09T07:00:00\", \"2023-08-09T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-10\",\r\n        \"shifts\": [\"2023-08-10T07:00:00\", \"2023-08-10T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-11\",\r\n        \"shifts\": [\"2023-08-11T07:00:00\", \"2023-08-11T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-12\",\r\n        \"shifts\": [\"2023-08-12T07:00:00\", \"2023-08-12T15:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-13\",\r\n        \"shifts\": [\"2023-08-13T07:00:00\", \"2023-08-13T15:00:00\"]\r\n    }\r\n]",
+					"raw": "[\r\n    {\r\n        \"dayName\": \"2023-08-27\",\r\n        \"shifts\": [\"07:00:00\", \"15:00:00\", \"23:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-28\",\r\n        \"shifts\": [\"07:00:00\", \"15:00:00\", \"23:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-29\",\r\n        \"shifts\": [\"07:00:00\", \"15:00:00\", \"23:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-30\",\r\n        \"shifts\": [\"07:00:00\", \"15:00:00\", \"23:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-08-31\",\r\n        \"shifts\": [\"07:00:00\", \"15:00:00\", \"23:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-09-01\",\r\n        \"shifts\": [\"07:00:00\", \"15:00:00\", \"23:00:00\"]\r\n    },\r\n    {\r\n        \"dayName\": \"2023-09-02\",\r\n        \"shifts\": [\"07:00:00\", \"15:00:00\", \"23:00:00\"]\r\n    }\r\n]",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -87,15 +102,15 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/worker/5000/prefers/5000",
+					"raw": "{{cloudUrl}}/worker/{{workerId}}/prefers/{{companyId}}",
 					"host": [
-						"{{baseUrl}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"worker",
-						"5000",
+						"{{workerId}}",
 						"prefers",
-						"5000"
+						"{{companyId}}"
 					]
 				}
 			},
@@ -107,15 +122,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrl}}/worker/6000/company/1200/schedule",
+					"raw": "{{cloudUrl}}/worker/{{workerId}}/company/{{companyId}}/schedule",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"worker",
-						"6000",
+						"{{workerId}}",
 						"company",
-						"1200",
+						"{{companyId}}",
 						"schedule"
 					]
 				}
@@ -137,13 +152,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{cloudUrl}}/worker/6000",
+					"raw": "{{cloudUrl}}/worker/{{workerId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"worker",
-						"6000"
+						"{{workerId}}"
 					]
 				}
 			},
@@ -153,7 +168,18 @@
 			"name": "Get all messages",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/worker/{{workerId}}/messages",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"worker",
+						"{{workerId}}",
+						"messages"
+					]
+				}
 			},
 			"response": []
 		},
@@ -161,15 +187,48 @@
 			"name": "Get message by message id",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/worker/{{workerId}}/messsage/{{messageId}}",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"worker",
+						"{{workerId}}",
+						"messsage",
+						"{{messageId}}"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Answer Message",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"answer\": true,\r\n    \"reason\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cloudUrl}}/worker/{{workerId}}/answer/{{messageId}}",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"worker",
+						"{{workerId}}",
+						"answer",
+						"{{messageId}}"
+					]
+				}
 			},
 			"response": []
 		}

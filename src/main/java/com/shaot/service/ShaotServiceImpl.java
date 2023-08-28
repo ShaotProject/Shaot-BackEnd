@@ -21,6 +21,7 @@ import com.shaot.dto.company.CompanyForWorkerDto;
 import com.shaot.dto.company.CompanyRemoveShiftDto;
 import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
 import com.shaot.dto.company.CompanyShiftDto;
+import com.shaot.dto.company.CompanyTestAlarmPoint;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
@@ -327,12 +328,12 @@ public class ShaotServiceImpl implements ShaotService {
 
 	@Override
 	@Transactional
-	public Set<ShiftView> configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
+	public ScheduleConfigurationDto configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.getGenerator().generateWeek(configuration);
 		companiesRepository.save(company);
-		return company.getGenerator().getSchedule();
+		return company.getGenerator().getBasicConfiguration();
 	}
 
 	@Override

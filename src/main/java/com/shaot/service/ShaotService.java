@@ -11,6 +11,7 @@ import com.shaot.dto.company.CompanyDto;
 import com.shaot.dto.company.CompanyRemoveShiftDto;
 import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
 import com.shaot.dto.company.CompanyShiftDto;
+import com.shaot.dto.company.CompanyTestAlarmPoint;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
@@ -86,7 +87,7 @@ public interface ShaotService {
 	
 	Set<ShiftView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto);
 	
-	Set<ShiftView> configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
+	ScheduleConfigurationDto configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
 	
 	WorkerMessage sendMessage(Long companyId, Long workerId, SendMessageDto message);
 	

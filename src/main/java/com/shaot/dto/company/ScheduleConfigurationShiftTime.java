@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class ScheduleConfigurationShiftTime {
 	private LocalTime start;
 	private LocalTime end;
+	private int workersNumberPerShift;
 }

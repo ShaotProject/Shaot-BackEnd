@@ -9,6 +9,7 @@ import com.shaot.dto.company.CompanyAddShiftDto;
 import com.shaot.dto.company.CompanyAddWorkingDay;
 import com.shaot.dto.company.CompanyRemoveShiftDto;
 import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
+import com.shaot.dto.company.CompanyTestAlarmPoint;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
@@ -21,7 +22,7 @@ public interface ScheduleGenerator {
 	
 	Set<ShiftView> generateSchedule();
 	
-	Set<GeneratorShift> generateWeek(ScheduleConfigurationDto weekGenerator);
+	ScheduleConfigurationDto generateWeek(ScheduleConfigurationDto weekGenerator);
 	
 	void addShift(CompanyAddShiftDto companyAddShiftDto);
 	

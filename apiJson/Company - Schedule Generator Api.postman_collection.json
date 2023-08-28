@@ -12,13 +12,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200",
+					"raw": "{{cloudUrl}}/company/{{companyId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200"
+						"{{companyId}}"
 					]
 				}
 			},
@@ -53,7 +53,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": 1300,\r\n    \"name\": \"Tempo\",\r\n    \"generalWage\": 35.0,\r\n    \"password\": \"1234\"\r\n}",
+					"raw": "{\r\n    \"id\": 5000,\r\n    \"name\": \"Tempo G-two\",\r\n    \"mail\": \"tempo@co.il\",\r\n    \"generalWage\": 38.5,\r\n    \"password\": \"1234\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -75,18 +75,40 @@
 		{
 			"name": "Add Worker to Company (also adding company to worker)",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "tempo@co.il",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "[tempo@co.il, hfl1n31c 3pdn1ux3pm[1u3[ruc[]",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200/worker/6000",
+					"raw": "{{cloudUrl}}/company/{{companyId}}/worker/{{workerId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200",
+						"{{companyId}}",
 						"worker",
-						"6000"
+						"{{workerId}}"
 					]
 				}
 			},
@@ -95,16 +117,31 @@
 		{
 			"name": "Get Company Schedule for week",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "tempo@co.il",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200/schedule",
+					"raw": "{{cloudUrl}}/company/{{companyId}}/schedule",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200",
+						"{{companyId}}",
 						"schedule"
 					]
 				}
@@ -114,11 +151,26 @@
 		{
 			"name": "ConfigurateSchedule",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "oded@gmail.com",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"weekStart\": \"2023-08-06\",\r\n    \"weekEnd\": \"2023-08-12\",\r\n    \"shifts\": [\r\n        {\r\n            \"start\": \"07:00:00\",\r\n            \"end\": \"15:00:00\"\r\n        },\r\n        {\r\n            \"start\": \"15:00:00\",\r\n            \"end\": \"23:00:00\"\r\n        }\r\n    ],\r\n    \"workersNumberPerShift\": 2\r\n}",
+					"raw": "{\r\n    \"weekStart\": \"2023-08-27\",\r\n    \"weekEnd\": \"2023-09-02\",\r\n    \"shiftsTime\": [\r\n        {\r\n            \"start\": \"07:00:00\",\r\n            \"end\": \"15:00:00\"\r\n        },\r\n        {\r\n            \"start\": \"15:00:00\",\r\n            \"end\": \"23:00:00\"\r\n        },\r\n        {\r\n            \"start\": \"23:00:00\",\r\n            \"end\": \"07:00:00\"\r\n        }\r\n    ],\r\n    \"workersNumberPerShift\": 3\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -126,13 +178,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200/schedule/configure",
+					"raw": "{{cloudUrl}}/company/{{companyId}}/schedule/configure",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200",
+						"{{companyId}}",
 						"schedule",
 						"configure"
 					]
@@ -143,18 +195,33 @@
 		{
 			"name": "Delete Worker From Company",
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "tempo@co.il",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200/worker/6000",
+					"raw": "{{cloudUrl}}/company/{{companyId}}/worker/{{workerId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200",
+						"{{companyId}}",
 						"worker",
-						"6000"
+						"{{workerId}}"
 					]
 				}
 			},
@@ -175,13 +242,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200",
+					"raw": "{{cloudUrl}}/company/{{companyId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200"
+						"{{companyId}}"
 					]
 				}
 			},
@@ -194,7 +261,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"newWage\": 41.0\r\n}",
+					"raw": "{\r\n    \"newWage\": 39.0\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -202,13 +269,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/company/1200/wage",
+					"raw": "{{cloudUrl}}/company/{{companyId}}/wage",
 					"host": [
-						"{{baseUrl}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200",
+						"{{companyId}}",
 						"wage"
 					]
 				}
@@ -218,8 +285,30 @@
 		{
 			"name": "Set individual wage",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"newWage\": 42.0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{cloudUrl}}/company/{{companyId}}/wage/worker/{{workerId}}",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"company",
+						"{{companyId}}",
+						"wage",
+						"worker",
+						"{{workerId}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -230,7 +319,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"messageId\": 1000,\r\n    \"shiftNeed\": \"2023-08-13T07:00:00\"\r\n}",
+					"raw": "{\r\n    \"messageId\": 1000,\r\n    \"shiftNeed\": \"2023-08-13T15:00:00\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -238,15 +327,15 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/company/1700/worker/1/message",
+					"raw": "{{cloudUrl}}/company/{{companyId}}/worker/{{workerId}}/message",
 					"host": [
-						"{{baseUrl}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1700",
+						"{{companyId}}",
 						"worker",
-						"1",
+						"{{workerId}}",
 						"message"
 					]
 				}
@@ -257,7 +346,18 @@
 			"name": "Get All Messages",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/company/{{companyId}}/messages",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"company",
+						"{{companyId}}",
+						"messages"
+					]
+				}
 			},
 			"response": []
 		},
@@ -265,7 +365,19 @@
 			"name": "Get Message by Message ID",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/company/{{companyId}}/message/{{messageId}}",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"company",
+						"{{companyId}}",
+						"message",
+						"{{messageId}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -275,15 +387,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/company/1700/worker/1/messages",
+					"raw": "{{cloudUrl}}/company/{{companyId}}/worker/{{workerId}}/messages",
 					"host": [
-						"{{baseUrl}}"
+						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1700",
+						"{{companyId}}",
 						"worker",
-						"1",
+						"{{workerId}}",
 						"messages"
 					]
 				}

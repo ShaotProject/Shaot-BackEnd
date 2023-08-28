@@ -1,5 +1,6 @@
 package com.shaot.dto.worker;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,6 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkerShiftView {
-	private LocalDate dayName;
+	private String dayName;
 	private LocalDateTime shiftName;
 }

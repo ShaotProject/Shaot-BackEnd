@@ -1,5 +1,6 @@
 package com.shaot.schedule.generator;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,7 +21,7 @@ import lombok.Setter;
 @Getter
 public class GeneratorShift implements Comparable<GeneratorShift>{
 	private LocalDateTime shiftName;
-	private LocalDate dayName;
+	private String dayName;
 	private List<String> workersOnShift;
 	private LocalTime shiftStart;
 	private LocalTime shiftEnd;
@@ -30,7 +31,7 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 	private List<GeneratorWorker> available;
 	private int hoursPerShift;
 	
-	public GeneratorShift(LocalDateTime shiftName, LocalDate dayName, LocalTime shiftStart, LocalTime shiftEnd) {
+	public GeneratorShift(LocalDateTime shiftName, String dayName, LocalTime shiftStart, LocalTime shiftEnd) {
 		this.shiftName = shiftName;
 		this.dayName = dayName;
 		this.shiftStart = shiftStart;

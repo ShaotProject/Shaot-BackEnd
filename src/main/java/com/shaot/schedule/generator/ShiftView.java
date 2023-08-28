@@ -1,5 +1,6 @@
 package com.shaot.schedule.generator;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,12 +15,12 @@ import lombok.Getter;
 @EqualsAndHashCode(of="shiftName")
 public class ShiftView implements Comparable<ShiftView>{
 	private LocalDateTime shiftName;
-	private LocalDate dayName;
+	private String dayName;
 	private LocalTime shiftStart;
 	private LocalTime shiftEnds;
 	private Set<String> workerNames;
 	
-	public ShiftView(LocalDateTime shiftName, LocalDate dayName, LocalTime shiftStart, LocalTime shiftEnds) {
+	public ShiftView(LocalDateTime shiftName, String dayName, LocalTime shiftStart, LocalTime shiftEnds) {
 		this.shiftName = shiftName;
 		this.shiftStart = shiftStart;
 		this.shiftEnds = shiftEnds;

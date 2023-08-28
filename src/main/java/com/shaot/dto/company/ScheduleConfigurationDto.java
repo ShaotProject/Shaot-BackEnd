@@ -1,6 +1,8 @@
 package com.shaot.dto.company;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -18,5 +20,6 @@ public class ScheduleConfigurationDto {
 	private LocalDate weekStart;
 	private LocalDate weekEnd;
 	private List<ScheduleConfigurationShiftTime> shiftsTime;
-	private int workersNumberPerShift;
+	private List<String> workDays;
+	private LocalDate alarmPoint;
 }

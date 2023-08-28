@@ -12,13 +12,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrl}}/worker/6000",
+					"raw": "{{cloudUrl}}/worker/{{workerId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"worker",
-						"6000"
+						"{{workerId}}"
 					]
 				}
 			},
@@ -30,13 +30,13 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{cloudUrl}}/company/1200",
+					"raw": "{{cloudUrl}}/company/{{companyId}}",
 					"host": [
 						"{{cloudUrl}}"
 					],
 					"path": [
 						"company",
-						"1200"
+						"{{companyId}}"
 					]
 				}
 			},
@@ -46,7 +46,16 @@
 			"name": "Get All Companies",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/companies",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"companies"
+					]
+				}
 			},
 			"response": []
 		},
@@ -54,7 +63,16 @@
 			"name": "Get all workers",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "{{cloudUrl}}/workers",
+					"host": [
+						"{{cloudUrl}}"
+					],
+					"path": [
+						"workers"
+					]
+				}
 			},
 			"response": []
 		}

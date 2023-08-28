@@ -25,6 +25,7 @@ import com.shaot.dto.company.CompanyDto;
 import com.shaot.dto.company.CompanyRemoveShiftDto;
 import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
 import com.shaot.dto.company.CompanyShiftDto;
+import com.shaot.dto.company.CompanyTestAlarmPoint;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
@@ -169,28 +170,28 @@ public class ShaotController {
 	////////////Company/////////////
 	////////////////////////////////
 	
-	LocalDate defaultWeekStart = LocalDate.now();
-	List<ScheduleConfigurationShiftTime> shiftTimes = buildDefaultShiftTimes();
-	
-	private List<ScheduleConfigurationShiftTime> buildDefaultShiftTimes() {
-		List<ScheduleConfigurationShiftTime> shiftTimes = new ArrayList<>();
-		shiftTimes.add(new ScheduleConfigurationShiftTime(LocalTime.of(7, 0), LocalTime.of(15, 0)));
-		shiftTimes.add(new ScheduleConfigurationShiftTime(LocalTime.of(15, 0), LocalTime.of(23, 0)));
-		return shiftTimes;
-	}
-	
-	ScheduleConfigurationDto basicWeek = ScheduleConfigurationDto
-			.builder()
-			.weekStart(defaultWeekStart)
-			.weekEnd(defaultWeekStart.plusDays(7))
-			.workersNumberPerShift(1)
-			.shiftsTime(shiftTimes)
-			.build();
+//	LocalDate defaultWeekStart = LocalDate.now();
+//	List<ScheduleConfigurationShiftTime> shiftTimes = buildDefaultShiftTimes();
+//	List<String> workDays = new ArrayList<>(List.of("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"));
+//	
+//	private List<ScheduleConfigurationShiftTime> buildDefaultShiftTimes() {
+//		List<ScheduleConfigurationShiftTime> shiftTimes = new ArrayList<>();
+//		shiftTimes.add(new ScheduleConfigurationShiftTime(LocalTime.of(7, 0), LocalTime.of(15, 0), 1));
+//		shiftTimes.add(new ScheduleConfigurationShiftTime(LocalTime.of(15, 0), LocalTime.of(23, 0), 1));
+//		return shiftTimes;
+//	}
+//	
+//	ScheduleConfigurationDto basicWeek = ScheduleConfigurationDto
+//			.builder()
+//			.weekStart(defaultWeekStart)
+//			.weekEnd(defaultWeekStart.plusDays(7))
+//			.shiftsTime(shiftTimes)
+//			.build();
 	
 	@PostMapping("/shaot/company")
 	public CompanyView addCompany(@RequestBody CompanyDto companyDto) {
 		CompanyView companyView = service.addCompanyToRepository(companyDto);
-		service.generateEmptyWeek(Long.valueOf(companyView.getId()), basicWeek);
+//		service.generateEmptyWeek(Long.valueOf(companyView.getId()), basicWeek);
 		return companyView;
 	}
 
@@ -235,7 +236,7 @@ public class ShaotController {
 	}
 	
 	@PutMapping("shaot/company/{id}/schedule/configure")
-	public Set<ShiftView> configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
+	public ScheduleConfigurationDto configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
 		return service.configurateSchedule(id, configuration);
 	}
 	
