@@ -41,11 +41,15 @@ import com.shaot.exceptions.CompanyNotFoundException;
 import com.shaot.exceptions.WorkerNotFoundException;
 import com.shaot.model.Company;
 import com.shaot.model.CompanyMessage;
+import com.shaot.model.ShaotLoginUser;
 import com.shaot.model.Worker;
 import com.shaot.model.WorkerMessage;
 import com.shaot.repository.CompaniesRepository;
 import com.shaot.repository.WorkersRepository;
+import com.shaot.schedule.generator.DayView;
 import com.shaot.schedule.generator.ShiftView;
+import com.shaot.security.context.SecurityContext;
+import com.shaot.security.model.ShaotUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,8 +59,30 @@ public class ShaotServiceImpl implements ShaotService {
 
 	final WorkersRepository workersRepository;
 	final CompaniesRepository companiesRepository;
+	final SecurityContext context;
 	final ModelMapper modelMapper;
 
+	
+	@Override
+	public ShaotLoginUser login(String mail) {
+		Worker worker = workersRepository.findWorkerByMail(mail).orElse(null);
+		Company company = companiesRepository.findCompanyByMail(mail).orElse(null);
+		if(worker != null) {
+			WorkerView workerView = modelMapper.map(worker, WorkerView.class);
+			workerView.setRole("WORKER");
+			return workerView;
+		} else {
+			CompanyView companyView = modelMapper.map(company, CompanyView.class);
+			companyView.setRole("COMPANY");
+			return companyView;
+		}
+	}
+	
+	@Override
+	public ShaotLoginUser exit(String mail) {
+		return login(mail);
+	}
+	
 	@Override
 	public List<WorkerView> getAllWorkers() {
 		return workersRepository.findAll().stream().map(w -> modelMapper.map(w, WorkerView.class)).toList();
@@ -146,7 +172,7 @@ public class ShaotServiceImpl implements ShaotService {
 	public void sendPrefers(List<WorkerPreferShiftsDto> workerPreferShiftsDtoList, long workerId, long companyId) {
 		Worker worker = workersRepository.findWorkerById(workerId)
 				.orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
-		if (worker.getCompany().equals(new CompanyForWorkerDto(companyId))) {
+		if (worker.getCompany().getId() == companyId) {
 			Company company = companiesRepository.findCompanyById(companyId)
 					.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 			company.addWorkerPrefers(worker.getId(), workerPreferShiftsDtoList);
@@ -275,7 +301,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Set<ShiftView> generateSchedule(long companyId) {
+	public Set<DayView> generateSchedule(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		return company.getGenerator().generateSchedule();
@@ -318,7 +344,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Set<ShiftView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto) {
+	public Set<DayView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.getGenerator().generateWeek(companyWeekGeneratorDto);
@@ -405,4 +431,10 @@ public class ShaotServiceImpl implements ShaotService {
 		return company.getAllMessagesByWorkerId(workerId);
 	}
 
+	@Override
+	public ScheduleConfigurationDto getCompanyConfiguration(long companyId) {
+		Company company = companiesRepository.findCompanyById(companyId)
+				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
+		return company.getGenerator().getBasicConfiguration();
+	}
 }

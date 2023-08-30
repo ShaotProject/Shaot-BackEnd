@@ -4,11 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.shaot.dto.company.CompanyAddShiftDto;
@@ -49,12 +52,14 @@ import com.shaot.exceptions.ResponseExceptionDto;
 import com.shaot.exceptions.UserNotFoundException;
 import com.shaot.exceptions.WorkerNotFoundException;
 import com.shaot.model.CompanyMessage;
+import com.shaot.model.ShaotLoginUser;
 import com.shaot.model.WorkerMessage;
+import com.shaot.schedule.generator.DayView;
 import com.shaot.schedule.generator.ShiftView;
 import com.shaot.service.ShaotService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = {"http://localhost:3000", "https://master--precious-puffpuff-924a8c.netlify.app", "http://localhost:8080"})
 public class ShaotController {
 	
 	@Autowired
@@ -90,6 +95,21 @@ public class ShaotController {
 		return new ResponseExceptionDto(403, "Company have no acess to the worker");
 	}
 	
+	@GetMapping("shaot/login")
+	public ShaotLoginUser login(@RequestHeader("Authorization") String header) {
+		String[] token = header.split(" ");
+		String decoded = new String(Base64.getDecoder().decode(token[1]));
+		String[] loginPass = decoded.split(":");
+		return service.login(loginPass[0]);
+	}
+	
+	@DeleteMapping("shaot/exit")
+	public ShaotLoginUser exit(@RequestHeader("Authorization") String header) {
+		String[] token = header.split(" ");
+		String decoded = new String(Base64.getDecoder().decode(token[1]));
+		String[] loginPass = decoded.split(":");
+		return service.exit(loginPass[0]);
+	}
 	
 	////////////////////////////////
 	////////////Admin///////////////
@@ -216,7 +236,7 @@ public class ShaotController {
 	}
 	
 	@GetMapping("shaot/company/{id}/schedule")
-	public Set<ShiftView>  generateSchedule(@PathVariable long id) {
+	public Set<DayView>  generateSchedule(@PathVariable long id) {
 		return service.generateSchedule(id);
 	}
 	
@@ -270,6 +290,10 @@ public class ShaotController {
 		return service.getCompanyMessageByWorkerId(companyId, workerId);
 	}
 	
+	@GetMapping("shaot/company/{companyId}/configuration")
+	public ScheduleConfigurationDto getCompanyConfiguration(@PathVariable long companyId) {
+		return service.getCompanyConfiguration(companyId);
+	}
 	
 	
 	

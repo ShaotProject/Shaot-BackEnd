@@ -27,12 +27,18 @@ import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.dto.worker.WorkerView;
 import com.shaot.model.CompanyMessage;
+import com.shaot.model.ShaotLoginUser;
 import com.shaot.model.Worker;
 import com.shaot.model.WorkerMessage;
+import com.shaot.schedule.generator.DayView;
 import com.shaot.schedule.generator.GeneratorShift;
 import com.shaot.schedule.generator.ShiftView;
 
 public interface ShaotService {
+	
+	//Authorization
+	ShaotLoginUser login(String mail);
+	ShaotLoginUser exit(String mail);
 	
 	//Admin
 	WorkerView deleteWorkerFromDataBase(long workerId);
@@ -75,7 +81,7 @@ public interface ShaotService {
 	
 	List<WorkerForCompanyView> setGeneralWage(long companyId, CompanyWageDto companyWageDto);
 
-	Set<ShiftView> generateSchedule(long companyId);
+	Set<DayView> generateSchedule(long companyId);
 
 	Set<CompanyShiftDto> addShift(long companyId, CompanyAddShiftDto companyShiftAddShiftDto);
 
@@ -85,7 +91,7 @@ public interface ShaotService {
 
 	Set<CompanyShiftDto> removeWorkingDay(long companyId, CompanyRemoveWorkingDayDto removeWorkingDayDto);
 	
-	Set<ShiftView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto);
+	Set<DayView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto);
 	
 	ScheduleConfigurationDto configurateSchedule(long companyId, ScheduleConfigurationDto configuration);
 	
@@ -96,4 +102,6 @@ public interface ShaotService {
 	CompanyMessage getCompanyMessageById(Long companyId, Long messageId);
 	
 	List<CompanyMessage> getCompanyMessageByWorkerId(Long companyId, Long workerId);
+	
+	ScheduleConfigurationDto getCompanyConfiguration(long companyId);
 }

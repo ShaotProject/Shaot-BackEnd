@@ -1,3 +1,4 @@
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\UserNotFoundException.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\model\Worker.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\GeneratorShift.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\repository\WorkersRepository.java
@@ -8,6 +9,7 @@ C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerSchedul
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\WorkerNotFoundException.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\AccessToCompanyRestrictedException.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\model\WorkerMessage.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\security\context\SecurityContextImpl.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyAddWorkingDay.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerForCompanyDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\ScheduleConfigurationDto.java
@@ -16,7 +18,9 @@ C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyForWo
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\repository\CompaniesRepository.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\GeneratorWorker.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyDto.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\security\filter\CompanyFilter.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyShiftDto.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\security\context\SecurityContext.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\schedule\GeneratorShiftDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\service\ShaotServiceImpl.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\CompanyAlreadyExistsException.java
@@ -29,6 +33,7 @@ C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyRemov
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyWeekGeneratorDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\ShiftView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyWorkingDayDto.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\DayView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyWageDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\GeneratorWorkingDay.java
@@ -39,12 +44,15 @@ C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\CompanyNotFou
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\ResponseExceptionDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\ScheduleGenerator.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\CompanyTestAlarmPoint.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\ScheduleGeneratorImpl.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerDayDto.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\security\filter\AuthenticationFilter.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\exceptions\AcessToWorkerRestrictedException.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\company\SendMessageDto.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\schedule\generator\UpdatableTreeSet.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerForCompanyView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\Shaot3Application.java
+C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\security\model\ShaotUser.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\dto\worker\WorkerShiftView.java
 C:\Users\jeman\Git\Shaot\Shaot3\src\main\java\com\shaot\model\CompanyMessage.java

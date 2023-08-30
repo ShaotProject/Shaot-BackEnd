@@ -7,10 +7,10 @@ import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Getter
 @AllArgsConstructor
 public class ShaotUser implements Principal{
 	private String mail;
-	@Getter
 	private Set<String> roles = new HashSet<>();
 	
 	public void addRole(String role) {
