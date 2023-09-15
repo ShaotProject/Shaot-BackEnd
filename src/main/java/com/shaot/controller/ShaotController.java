@@ -33,6 +33,7 @@ import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
 import com.shaot.dto.company.CompanyWeekGeneratorDto;
+import com.shaot.dto.company.PeriodDto;
 import com.shaot.dto.company.ScheduleConfigurationDto;
 import com.shaot.dto.company.ScheduleConfigurationShiftTime;
 import com.shaot.dto.company.SendMessageDto;
@@ -207,6 +208,16 @@ public class ShaotController {
 //			.weekEnd(defaultWeekStart.plusDays(7))
 //			.shiftsTime(shiftTimes)
 //			.build();
+	
+	@GetMapping("/shaot/company/{companyId}/week/names")
+	public List<String> getWeekNames(@PathVariable long companyId) {
+		return service.getWeekNames(companyId);
+	}
+	
+	@GetMapping("/shaot/company/{companyId}/week/period")
+	public List<DayView> getWeekByPeriod(@PathVariable long companyId, @RequestBody PeriodDto period) {
+		return service.getWeekByPeriod(companyId, period.getPeriod());
+	}
 	
 	@PostMapping("/shaot/company")
 	public CompanyView addCompany(@RequestBody CompanyDto companyDto) {

@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,6 +44,7 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	private Set<DayView> lastWeekSchedule;
 	private Set<GeneratorWorker> generatorWorkers;
 	private Set<GeneratorShift> workingWeek;
+	private TreeMap<String, List<DayView>> lastWeeks;
 	private Long hoursPerShift;
 	private LocalDate alarmPoint;
 	private ScheduleConfigurationDto basicConfiguration;
@@ -53,6 +55,7 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		lastWeekSchedule = new HashSet<>();
 		workingWeek = new TreeSet<>();
 		generatorWorkers = new HashSet<>();
+		lastWeeks = new TreeMap<>();
 	}
 
 	@Override
@@ -128,11 +131,23 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		});
 
 		Collections.sort(dayViews);
+		addScheduleToLastWeeks(dayViews);
 		schedule.clear();
 		schedule.addAll(dayViews);
 		lastWeekSchedule.clear();
 		lastWeekSchedule.addAll(dayViews);
 		return schedule;
+	}
+
+	private void addScheduleToLastWeeks(List<DayView> dayViews) {
+		if(lastWeeks.values().size() >= 5) {
+			lastWeeks.pollFirstEntry();
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
+		String weekStart = formatter.format(dayViews.get(0).getDayDate());
+		String weekEnd = formatter.format(dayViews.get(dayViews.size() - 1).getDayDate());
+		String period = weekStart + " - " + weekEnd;
+		lastWeeks.put(period, dayViews);
 	}
 
 	private GeneratorWorker getCandidate(GeneratorShift generatorShift, List<GeneratorShift> workingWeek) {
@@ -190,6 +205,17 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 						new ArrayList<>(companyAddWorkingDayDto.getWorkersQuantityPerShift()))));
 	}
 
+	@Override
+	public List<String> getLastWeeksNames() {
+		return lastWeeks.keySet().stream().toList();
+	}
+	
+	@Override
+	public List<DayView> getWeekByPeriod(String period) {
+		return lastWeeks.get(period);
+	}
+	
+	
 	@Override
 	public List<WorkerShiftView> getWorkerSchedule(Worker worker) {
 //		List<WorkerShiftView> workerSchedule = new ArrayList<>();

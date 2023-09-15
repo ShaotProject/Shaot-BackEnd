@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.shaot.dto.company.CompanyShiftDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
+import com.shaot.schedule.generator.DayView;
 import com.shaot.schedule.generator.ScheduleGeneratorImpl;
 
 import lombok.EqualsAndHashCode;
@@ -120,5 +121,13 @@ public class Company {
 	
 	public List<CompanyMessage> getAllMessagesByWorkerId(Long workerId) {
 		return messages.values().stream().filter(m -> m.getWorkerId().equals(workerId)).toList();
-	}	
+	}
+	
+	public List<String> getLastWeeksNames() {
+		return generator.getLastWeeksNames();
+	}
+	
+	public List<DayView> getWeekByPeriod(String period) {
+		return generator.getWeekByPeriod(period);
+	}
 }

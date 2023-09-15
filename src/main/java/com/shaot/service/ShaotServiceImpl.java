@@ -234,6 +234,20 @@ public class ShaotServiceImpl implements ShaotService {
 	///////////////////////////////////////////////////////////////////////
 
 	@Override
+	public List<String> getWeekNames(long companyId) {
+		Company company = companiesRepository.findCompanyById(companyId)
+				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
+		return company.getLastWeeksNames();
+	}
+	
+	@Override 
+	public List<DayView> getWeekByPeriod(long companyId, String period) {
+		Company company = companiesRepository.findCompanyById(companyId)
+				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
+		return company.getWeekByPeriod(period);
+	}
+	
+	@Override
 	@Transactional
 	public CompanyView addCompanyToRepository(CompanyDto companyDto) {
 		if (!companiesRepository.existsById(companyDto.getId())) {
@@ -304,7 +318,9 @@ public class ShaotServiceImpl implements ShaotService {
 	public Set<DayView> generateSchedule(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		return company.getGenerator().generateSchedule();
+		Set<DayView> schedule = company.getGenerator().generateSchedule();
+		companiesRepository.save(company);
+		return schedule;
 	}
 
 	@Override

@@ -22,6 +22,10 @@ public interface ScheduleGenerator {
 	
 	Set<DayView> generateSchedule();
 	
+	List<String> getLastWeeksNames();
+	
+	List<DayView> getWeekByPeriod(String period);
+	
 	ScheduleConfigurationDto generateWeek(ScheduleConfigurationDto weekGenerator);
 	
 	void addShift(CompanyAddShiftDto companyAddShiftDto);

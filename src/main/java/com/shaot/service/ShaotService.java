@@ -67,9 +67,14 @@ public interface ShaotService {
 	
 	
 	//Company
-	public CompanyView addCompanyToRepository(CompanyDto companyDto);
 	
-	public CompanyView findCompany(long id);
+	List<String> getWeekNames(long companyId);
+	
+	List<DayView> getWeekByPeriod(long companyId, String period);
+	
+	CompanyView addCompanyToRepository(CompanyDto companyDto);
+	
+	CompanyView findCompany(long id);
 	
 	CompanyView addWorkerToCompany(long companyId, long workerId);
 
