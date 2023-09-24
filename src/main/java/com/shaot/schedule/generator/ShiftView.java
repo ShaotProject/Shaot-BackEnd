@@ -7,14 +7,17 @@ import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class ShiftView {
 	private LocalDateTime shiftName;
 	private LocalTime shiftStart;
 	private LocalTime shiftEnd;
 	private Set<String> workerNames;
+	private int workersNumber;
 	
 	public void addWorkerName(String workerName) {
 		workerNames.add(workerName);

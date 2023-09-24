@@ -79,7 +79,7 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 					shift.setWorkerNeeded(shiftData.get(i).getWorkersNumberPerShift());
 					workingWeek.add(shift);
 					shiftViews.add(new ShiftView(shiftName, shiftData.get(i).getStart(), shiftData.get(i).getEnd(),
-							new HashSet<>()));
+							new HashSet<>(), shiftData.get(i).getWorkersNumberPerShift()));
 				}
 			}
 			schedule.add(new DayView(weekPointer, weekPointerDayName, shiftViews));
@@ -227,12 +227,10 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		return null;
 	}
 
-	public void setWorkerOnShiftManual(Long workerId, String workerName, LocalDateTime shiftName) {
-//		schedule.forEach(generatorShift -> {
-//			if (generatorShift.getShiftName().equals(shiftName)) {
-//				generatorShift.addWorkerName(workerName);
-//			}
-//		});
+	public void setWorkerOnShiftManual(String workerName, LocalDateTime shiftName) {
+		schedule.forEach(dv -> {
+			dv.addWorkerManualy(workerName, shiftName);
+		});
 	}
 
 	@Override
@@ -250,5 +248,11 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	@Override
 	public void addShift(CompanyAddShiftDto companyAddShiftDto) {
 		// TODO
+	}
+	
+	public Set<DayView> setSchedule(Set<DayView> schedule) {
+		this.schedule = schedule;
+		this.lastWeekSchedule = schedule;
+		return this.schedule;
 	}
 }

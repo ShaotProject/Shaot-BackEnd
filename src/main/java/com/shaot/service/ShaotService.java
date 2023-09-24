@@ -109,4 +109,8 @@ public interface ShaotService {
 	List<CompanyMessage> getCompanyMessageByWorkerId(Long companyId, Long workerId);
 	
 	ScheduleConfigurationDto getCompanyConfiguration(long companyId);
+	
+	Set<DayView> saveSchedule(long companyId);
+	
+	Set<DayView> updateSchedule(long companyId, Set<DayView> upSchedule);
 }

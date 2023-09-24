@@ -108,7 +108,9 @@ public class Company {
 	}
 	
 	public void setWorkerOnShiftManual(Long workerId, String workerName, LocalDateTime shiftName) {
-		generator.setWorkerOnShiftManual(workerId, workerName, shiftName);
+		if(workersMap.containsKey(workerId)){
+			generator.setWorkerOnShiftManual(workerName, shiftName);
+		}
 	}
 	
 	public CompanyMessage addMessage(Long workerId, Long messageId, String reason, boolean answer) {

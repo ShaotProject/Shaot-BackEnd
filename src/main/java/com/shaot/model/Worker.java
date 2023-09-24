@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.shaot.dto.company.CompanyForWorkerDto;
 import com.shaot.dto.worker.WorkerScheduleDto;
+import com.shaot.schedule.generator.DayView;
+import com.shaot.schedule.generator.ShiftView;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,7 +34,7 @@ public class Worker {
 	@Setter
 	private boolean individualWage;
 	private CompanyForWorkerDto company;
-	private List<WorkerScheduleDto> shifts = new ArrayList<>();
+	private Set<ShiftView> shifts = new HashSet<>();
 	private Map<Long, WorkerMessage> messages = new ConcurrentHashMap<>();
 	
 	public Worker(long id, String name, String mail, String password) {
@@ -53,7 +55,7 @@ public class Worker {
 		}
 	}
 	
-	public boolean addShift(WorkerScheduleDto shift) {
+	public boolean addShift(ShiftView shift) {
 		if(!shifts.contains(shift)) {
 			return shifts.add(shift);
 		}

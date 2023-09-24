@@ -60,7 +60,12 @@ import com.shaot.schedule.generator.ShiftView;
 import com.shaot.service.ShaotService;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "https://master--precious-puffpuff-924a8c.netlify.app", "http://localhost:8080"})
+@CrossOrigin(
+		origins = {"http://localhost:3000", "https://master--precious-puffpuff-924a8c.netlify.app", "http://localhost:8080"},
+		allowedHeaders = {"Authorization", "Origin", "Content-Type"},
+		exposedHeaders = {"Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers"},
+		maxAge = 3600
+		)
 public class ShaotController {
 	
 	@Autowired
@@ -306,6 +311,15 @@ public class ShaotController {
 		return service.getCompanyConfiguration(companyId);
 	}
 	
+	@PostMapping("shaot/company/{companyId}/schedule/save")
+	public Set<DayView> ScheduleSave(@PathVariable long companyId) {
+		return service.saveSchedule(companyId);
+	}
+	
+	@PutMapping("shaot/company/{companyId}/schedule/update")
+	public Set<DayView> updateSchedule(@PathVariable long companyId, @RequestBody Set<DayView> upSchedule) {
+		return service.updateSchedule(companyId, upSchedule);
+	}
 	
 	
 	
