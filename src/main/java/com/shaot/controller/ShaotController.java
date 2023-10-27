@@ -8,6 +8,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Stream;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.shaot.dto.company.AlarmPoint;
 import com.shaot.dto.company.CompanyAddShiftDto;
 import com.shaot.dto.company.CompanyDto;
 import com.shaot.dto.company.CompanyRemoveShiftDto;
@@ -191,6 +193,10 @@ public class ShaotController {
 		return service.answerMessage(workerId, messageId, messageAnswerDto);
 	}
 	
+	@GetMapping("shaot/worker/{companyId}/schedule/posibilities")
+	public List<WorkerPreferShiftsDto> getWeeklyPosibilities(@PathVariable Long companyId) {
+		return service.getWorkerPosibilities(companyId);
+	}
 		
 	////////////////////////////////
 	////////////Company/////////////
@@ -219,7 +225,7 @@ public class ShaotController {
 		return service.getWeekNames(companyId);
 	}
 	
-	@GetMapping("/shaot/company/{companyId}/week/period")
+	@PostMapping("/shaot/company/{companyId}/week/period")
 	public List<DayView> getWeekByPeriod(@PathVariable long companyId, @RequestBody PeriodDto period) {
 		return service.getWeekByPeriod(companyId, period.getPeriod());
 	}
@@ -252,7 +258,7 @@ public class ShaotController {
 	}
 	
 	@GetMapping("shaot/company/{id}/schedule")
-	public Set<DayView>  generateSchedule(@PathVariable long id) {
+	public List<DayView>  generateSchedule(@PathVariable long id) {
 		return service.generateSchedule(id);
 	}
 	
@@ -272,7 +278,7 @@ public class ShaotController {
 	}
 	
 	@PutMapping("shaot/company/{id}/schedule/configure")
-	public ScheduleConfigurationDto configurateSchedule(@PathVariable long id, @RequestBody ScheduleConfigurationDto configuration) {
+	public ScheduleConfigurationDto configurateSchedule(@PathVariable long id, @RequestBody List<ScheduleConfigurationDto> configuration) {
 		return service.configurateSchedule(id, configuration);
 	}
 	
@@ -312,30 +318,12 @@ public class ShaotController {
 	}
 	
 	@PostMapping("shaot/company/{companyId}/schedule/save")
-	public Set<DayView> ScheduleSave(@PathVariable long companyId) {
+	public List<DayView> ScheduleSave(@PathVariable long companyId) {
 		return service.saveSchedule(companyId);
 	}
 	
 	@PutMapping("shaot/company/{companyId}/schedule/update")
-	public Set<DayView> updateSchedule(@PathVariable long companyId, @RequestBody Set<DayView> upSchedule) {
+	public List<DayView> updateSchedule(@PathVariable long companyId, @RequestBody List<DayView> upSchedule) {
 		return service.updateSchedule(companyId, upSchedule);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 }

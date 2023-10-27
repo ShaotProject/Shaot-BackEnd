@@ -107,6 +107,10 @@ public class Company {
 		});	
 	}
 	
+	public List<WorkerPreferShiftsDto> getWeeklyPosibilities() {
+		return generator.getWeeklyPosibilities();
+	}
+	
 	public void setWorkerOnShiftManual(Long workerId, String workerName, LocalDateTime shiftName) {
 		if(workersMap.containsKey(workerId)){
 			generator.setWorkerOnShiftManual(workerName, shiftName);

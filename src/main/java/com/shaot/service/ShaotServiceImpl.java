@@ -3,9 +3,7 @@ package com.shaot.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -21,7 +19,6 @@ import com.shaot.dto.company.CompanyForWorkerDto;
 import com.shaot.dto.company.CompanyRemoveShiftDto;
 import com.shaot.dto.company.CompanyRemoveWorkingDayDto;
 import com.shaot.dto.company.CompanyShiftDto;
-import com.shaot.dto.company.CompanyTestAlarmPoint;
 import com.shaot.dto.company.CompanyUpdateDto;
 import com.shaot.dto.company.CompanyView;
 import com.shaot.dto.company.CompanyWageDto;
@@ -32,7 +29,6 @@ import com.shaot.dto.worker.WorkerDto;
 import com.shaot.dto.worker.WorkerForCompanyDto;
 import com.shaot.dto.worker.WorkerForCompanyView;
 import com.shaot.dto.worker.WorkerPreferShiftsDto;
-import com.shaot.dto.worker.WorkerScheduleDto;
 import com.shaot.dto.worker.WorkerShiftView;
 import com.shaot.dto.worker.WorkerUpdateDto;
 import com.shaot.dto.worker.WorkerView;
@@ -48,9 +44,7 @@ import com.shaot.model.WorkerMessage;
 import com.shaot.repository.CompaniesRepository;
 import com.shaot.repository.WorkersRepository;
 import com.shaot.schedule.generator.DayView;
-import com.shaot.schedule.generator.ShiftView;
 import com.shaot.security.context.SecurityContext;
-import com.shaot.security.model.ShaotUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -229,6 +223,13 @@ public class ShaotServiceImpl implements ShaotService {
 		workersRepository.save(worker);
 		return worker.getMessageById(messageId);
 	}
+	
+	@Override
+	public List<WorkerPreferShiftsDto> getWorkerPosibilities(Long companyId) {
+		Company company = companiesRepository.findCompanyById(companyId)
+				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
+		return company.getWeeklyPosibilities();
+	}
 
 	///////////////////////////////////////////////////////////////////////
 	// -----------------------Company Service----------------------------//
@@ -316,10 +317,10 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Set<DayView> generateSchedule(long companyId) {
+	public List<DayView> generateSchedule(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Set<DayView> schedule = company.getGenerator().generateSchedule();
+		List<DayView> schedule = company.getGenerator().generateSchedule();
 		companiesRepository.save(company);
 		return schedule;
 	}
@@ -361,7 +362,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Set<DayView> generateEmptyWeek(long companyId, ScheduleConfigurationDto companyWeekGeneratorDto) {
+	public List<DayView> generateEmptyWeek(long companyId, List<ScheduleConfigurationDto> companyWeekGeneratorDto) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.getGenerator().generateWeek(companyWeekGeneratorDto);
@@ -371,7 +372,7 @@ public class ShaotServiceImpl implements ShaotService {
 
 	@Override
 	@Transactional
-	public ScheduleConfigurationDto configurateSchedule(long companyId, ScheduleConfigurationDto configuration) {
+	public ScheduleConfigurationDto configurateSchedule(long companyId, List<ScheduleConfigurationDto> configuration) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.getGenerator().generateWeek(configuration);
@@ -456,10 +457,10 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 
 	@Override
-	public Set<DayView> saveSchedule(long companyId) {
+	public List<DayView> saveSchedule(long companyId) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
-		Set<DayView> schedule = company.getGenerator().getSchedule();
+		List<DayView> schedule = company.getGenerator().getSchedule();
 		company.getWorkers().forEach(w -> {
 			Worker worker = workersRepository.findWorkerById(w.getId()).orElseThrow(() -> new WorkerNotFoundException(HttpStatus.NOT_FOUND));
 			schedule.forEach(dayView -> {
@@ -476,7 +477,7 @@ public class ShaotServiceImpl implements ShaotService {
 	}
 	
 	@Override
-	public Set<DayView> updateSchedule(long companyId, Set<DayView> upSchedule) {
+	public List<DayView> updateSchedule(long companyId, List<DayView> upSchedule) {
 		Company company = companiesRepository.findCompanyById(companyId)
 				.orElseThrow(() -> new CompanyNotFoundException(HttpStatus.NOT_FOUND));
 		company.getGenerator().setSchedule(upSchedule);

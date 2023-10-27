@@ -231,6 +231,14 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Weekly Posibilities",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
 		}
 	],
 	"variable": [

@@ -31,7 +31,7 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 	private List<GeneratorWorker> available;
 	private int hoursPerShift;
 	
-	public GeneratorShift(LocalDateTime shiftName, String dayName, LocalTime shiftStart, LocalTime shiftEnd) {
+	public GeneratorShift(LocalDateTime shiftName, String dayName, LocalTime shiftStart, LocalTime shiftEnd, int workerNeeded) {
 		this.shiftName = shiftName;
 		this.dayName = dayName;
 		this.shiftStart = shiftStart;
@@ -39,6 +39,7 @@ public class GeneratorShift implements Comparable<GeneratorShift>{
 		this.available = new ArrayList<>();
 		this.workersOnShift = new ArrayList<>();
 		this.hoursPerShift = countHoursPerShift();
+		this.workerNeeded = workerNeeded;
 	}
 	
 	public int countHoursPerShift() {

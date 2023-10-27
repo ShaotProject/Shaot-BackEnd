@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,20 @@ public class DayView implements Comparable<DayView>{
 	private LocalDate dayDate;
 	private String dayName;
 	private List<ShiftView> shifts;
+	
+	public DayView(LocalDate dayDate, String dayName) {
+		this.dayDate = dayDate;
+		this.dayName = dayName;
+		this.shifts = new ArrayList<>();
+	}
+	
+	public boolean addShift(ShiftView shift) {
+		if(!shifts.contains(shift)) {
+			shifts.add(shift);
+			return true;
+		}
+		return false;
+	}
 	
 	public ShiftView containsWorker(String workerName) {
 		for(int i = 0; i < shifts.size(); i++) {
@@ -44,6 +59,12 @@ public class DayView implements Comparable<DayView>{
 	
 	@Override
 	public int compareTo(DayView o) {
-		return dayDate.compareTo(o.getDayDate());
+		if(o.getDayDate().isBefore(dayDate)) {
+			return -1;
+		}
+		if(o.getDayDate().isAfter(dayDate)) {
+			return 1;
+		}
+		return 0;
 	}
 }

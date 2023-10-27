@@ -40,8 +40,8 @@ import lombok.Getter;
 @Getter
 public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	private Map<Long, GeneratorWorker> workerPrefers;
-	private Set<DayView> schedule;
-	private Set<DayView> lastWeekSchedule;
+	private List<DayView> schedule;
+	private List<DayView> lastWeekSchedule;
 	private Set<GeneratorWorker> generatorWorkers;
 	private Set<GeneratorShift> workingWeek;
 	private TreeMap<String, List<DayView>> lastWeeks;
@@ -51,46 +51,38 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 
 	public ScheduleGeneratorImpl() {
 		workerPrefers = new ConcurrentHashMap<>();
-		schedule = new HashSet<>();
-		lastWeekSchedule = new HashSet<>();
+		schedule = new ArrayList<>();
+		lastWeekSchedule = new ArrayList<>();
 		workingWeek = new TreeSet<>();
 		generatorWorkers = new HashSet<>();
 		lastWeeks = new TreeMap<>();
 	}
 
 	@Override
-	public ScheduleConfigurationDto generateWeek(ScheduleConfigurationDto weekGenerator) {
+	public List<ScheduleConfigurationDto> generateWeek(List<ScheduleConfigurationDto> weekGenerator) {
 		workingWeek.clear();
 		schedule.clear();
-		this.alarmPoint = weekGenerator.getAlarmPoint();
-		this.basicConfiguration = weekGenerator;
-		LocalDate weekPointer = weekGenerator.getWeekStart();
-		LocalDate weekEnd = weekGenerator.getWeekEnd();
-		List<String> workDays = weekGenerator.getWorkDays();
-		List<ScheduleConfigurationShiftTime> shiftData = weekGenerator.getShiftsTime();
-		while (!weekPointer.isAfter(weekEnd)) {
-			String weekPointerDayName = weekPointer.getDayOfWeek().toString();
-			List<ShiftView> shiftViews = new ArrayList<>();
-			if (workDays.contains(weekPointerDayName.toString())) {
-				for (int i = 0; i < shiftData.size(); i++) {
-					LocalDateTime shiftName = weekPointer.atTime(shiftData.get(i).getStart());
-					GeneratorShift shift = new GeneratorShift(shiftName, weekPointerDayName,
-							shiftData.get(i).getStart(), shiftData.get(i).getEnd());
-					shift.setWorkerNeeded(shiftData.get(i).getWorkersNumberPerShift());
-					workingWeek.add(shift);
-					shiftViews.add(new ShiftView(shiftName, shiftData.get(i).getStart(), shiftData.get(i).getEnd(),
-							new HashSet<>(), shiftData.get(i).getWorkersNumberPerShift()));
-				}
-			}
-			schedule.add(new DayView(weekPointer, weekPointerDayName, shiftViews));
-			weekPointer = weekPointer.plusDays(1);
-		}
-
-		if (lastWeekSchedule.isEmpty()) {
-			lastWeekSchedule.addAll(schedule);
-		}
-
+		Set<DayView> dayViews = new HashSet<>();
+		weekGenerator.forEach(wg -> {
+			LocalDateTime shiftName = wg.getShiftStart().atDate(wg.getDayDate());
+			GeneratorShift generatorShift = new GeneratorShift(shiftName, wg.getDayName(), wg.getShiftStart(), wg.getShiftEnd(), wg.getWorkerNeeded());
+			workingWeek.add(generatorShift);
+			dayViews.add(new DayView(wg.getDayDate(), wg.getDayName()));
+		});
+		addShiftsToSchedule(dayViews);	
 		return weekGenerator;
+	}
+
+	private void addShiftsToSchedule(Set<DayView> dayViews) {
+		dayViews.forEach(dv -> {
+			workingWeek.forEach(gs -> {
+				if(gs.getShiftName().toLocalDate().equals(dv.getDayDate())) {
+					dv.addShift(new ShiftView(gs.getShiftName(), gs.getShiftStart(), gs.getShiftEnd(), new HashSet<>(), gs.getWorkerNeeded()));
+				}
+			});
+		});
+		schedule.addAll(dayViews);
+		
 	}
 
 	@Override
@@ -110,7 +102,7 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 	}
 
 	@Override
-	public Set<DayView> generateSchedule() {
+	public List<DayView> generateSchedule() {
 		List<DayView> dayViews = new ArrayList<>();
 		dayViews.addAll(schedule);
 		List<GeneratorShift> allShifts = copyWeek(workingWeek);
@@ -130,7 +122,6 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 			}
 		});
 
-		Collections.sort(dayViews);
 		addScheduleToLastWeeks(dayViews);
 		schedule.clear();
 		schedule.addAll(dayViews);
@@ -215,6 +206,18 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		return lastWeeks.get(period);
 	}
 	
+	@Override
+	public List<WorkerPreferShiftsDto> getWeeklyPosibilities() {
+		List<WorkerPreferShiftsDto> res = new ArrayList<>();
+		schedule.forEach(dayView -> {
+			List<LocalTime> times = new ArrayList<>();
+			for(int i = 0; i < dayView.getShifts().size(); i++) {
+				times.add(dayView.getShifts().get(i).getShiftStart().plusHours(3));
+			}
+			res.add(new WorkerPreferShiftsDto(dayView.getDayDate(), times));
+		});
+		return res;	
+	}
 	
 	@Override
 	public List<WorkerShiftView> getWorkerSchedule(Worker worker) {
@@ -250,9 +253,8 @@ public class ScheduleGeneratorImpl implements ScheduleGenerator {
 		// TODO
 	}
 	
-	public Set<DayView> setSchedule(Set<DayView> schedule) {
+	public List<DayView> setSchedule(List<DayView> schedule) {
 		this.schedule = schedule;
-		this.lastWeekSchedule = schedule;
 		return this.schedule;
 	}
 }
